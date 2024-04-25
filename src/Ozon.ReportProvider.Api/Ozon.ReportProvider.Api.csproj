@@ -3,4 +3,7 @@
     <PackageReference Include="Grpc.AspNetCore" />
     <PackageReference Include="Grpc.AspNetCore.Server.Reflection" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ozon.ReportProvider.Dal\Ozon.ReportProvider.Dal.csproj" />
+  </ItemGroup>
 </Project>

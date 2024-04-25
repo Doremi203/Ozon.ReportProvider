@@ -1,8 +1,14 @@
+using Ozon.ReportProvider.Dal.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
+var configuration = builder.Configuration;
 
 // Add services to the container.
-builder.Services.AddGrpc();
-builder.Services.AddGrpcReflection();
+services.AddGrpc();
+services.AddGrpcReflection();
+
+services.AddDal(configuration);
 
 var app = builder.Build();
 
