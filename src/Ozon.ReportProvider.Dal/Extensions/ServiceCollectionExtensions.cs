@@ -31,7 +31,7 @@ public static class ServiceCollectionExtensions
     )
     {
         services
-            .Configure<DataBaseOptions>(configuration.GetSection(nameof(DataBaseOptions)))
+            .Configure<DatabaseOptions>(configuration.GetSection(nameof(DatabaseOptions)))
             .Configure<RedisOptions>(configuration.GetSection(nameof(RedisOptions)));
 
         return services;
@@ -41,8 +41,8 @@ public static class ServiceCollectionExtensions
     {
         DefaultTypeMap.MatchNamesWithUnderscores = true;
 
-        var dataBaseOptions = configuration.Get<DataBaseOptions>()
-            ?? throw new ArgumentNullException(nameof(DataBaseOptions), "DataBaseOptions is not configured");
+        var dataBaseOptions = configuration.Get<DatabaseOptions>()
+            ?? throw new ArgumentNullException(nameof(DatabaseOptions), "DataBaseOptions is not configured");
         
         services.AddNpgsqlDataSource(dataBaseOptions.ConnectionString);
 
