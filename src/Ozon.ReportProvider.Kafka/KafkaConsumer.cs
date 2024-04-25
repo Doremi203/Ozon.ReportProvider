@@ -74,20 +74,14 @@ public sealed class KafkaConsumer<TKey, TValue> : IDisposable
     {
         await foreach(var consumeResult in _channel.Reader.ReadAllAsync(token))
         {
-            await _policy.ExecuteAsync(async () =>
+            try
             {
-                try
-                {
-                    await _handler.Handle(consumeResult, token);
-                }
-                catch (Exception e)
-                {
-                    _logger.LogError(e, "Error while handling message, retrying...");
-                    throw;
-                }
-                
-                _consumer.StoreOffset(consumeResult);
-            });
+                await ProcessWithRetry(consumeResult, token);
+            }
+            finally
+            {
+                _channel.Writer.Complete();
+            }
         }
     }
 
@@ -107,10 +101,28 @@ public sealed class KafkaConsumer<TKey, TValue> : IDisposable
 
         _channel.Writer.Complete();
     }
+    
+    private async Task ProcessWithRetry(ConsumeResult<TKey, TValue> consumeResult, CancellationToken token)
+    {
+        await _policy.ExecuteAsync(async () =>
+        {
+            try
+            {
+                await _handler.Handle(consumeResult, token);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error while handling message, retrying...");
+                throw;
+            }
+                
+            _consumer.StoreOffset(consumeResult);
+        });
+    }
 
     public void Dispose()
     {
         _consumer.Close();
-        
+        _channel.Writer.Complete();
     }
 }
