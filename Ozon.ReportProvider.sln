@@ -13,6 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{209AE7
 		Directory.Packages.props = Directory.Packages.props
 		Directory.Build.props = Directory.Build.props
 		.gitignore = .gitignore
+		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ozon.ReportProvider.Dal", "src\Ozon.ReportProvider.Dal\Ozon.ReportProvider.Dal.csproj", "{E14947FB-9EC4-46E0-82E8-E09B2C3ECC8F}"
