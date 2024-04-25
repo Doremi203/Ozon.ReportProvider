@@ -23,3 +23,17 @@ services:
       - 9092
     volumes:
       - kafkadata:/kafka
+  zookeeper:
+    image: zookeeper:latest
+    ports:
+      - 2181:2181
+    volumes:
+      - zkdata:/data
+      - zkdatalog:/datalog
+      - zklogs:/logs
+
+volumes:
+    kafkadata:
+    zkdata:
+    zkdatalog:
+    zklogs:
