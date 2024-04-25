@@ -1,4 +1,21 @@
 services:
+  database:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DATABASEOPTIONS__USERID}
+      POSTGRES_PASSWORD: ${DATABASEOPTIONS__PASSWORD}
+      POSTGRES_DB: ${DATABASEOPTIONS__DATABASE}
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "${DATABASESETTINGS__USERID}" ]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 5
   redis:
     image: redis
     restart: always
@@ -33,7 +50,8 @@ services:
       - zklogs:/logs
 
 volumes:
-    kafkadata:
-    zkdata:
-    zkdatalog:
-    zklogs:
+  dbdata:
+  kafkadata:
+  zkdata:
+  zkdatalog:
+  zklogs:
