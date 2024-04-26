@@ -1,4 +1,5 @@
 using Confluent.Kafka;
+using Ozon.ReportProvider.Api.Kafka;
 using Ozon.ReportProvider.Kafka;
 
 namespace Ozon.ReportProvider.Api.Extensions;
