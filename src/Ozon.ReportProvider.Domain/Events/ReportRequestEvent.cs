@@ -1,4 +1,4 @@
-namespace Ozon.ReportProvider.Domain.Models;
+namespace Ozon.ReportProvider.Domain.Events;
 
 public record ReportRequestEvent
 {
