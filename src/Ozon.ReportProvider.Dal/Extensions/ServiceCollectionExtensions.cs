@@ -22,7 +22,7 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddRedisRepositories(this IServiceCollection services)
     {
-        throw new NotImplementedException();
+        return services;
     }
 
     private static IServiceCollection AddInfrastructure(
