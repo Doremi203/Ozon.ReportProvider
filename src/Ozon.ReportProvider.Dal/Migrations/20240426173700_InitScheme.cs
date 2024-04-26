@@ -6,7 +6,7 @@ namespace Ozon.ReportProvider.Dal.Migrations;
 public class InitScheme : Migration {
     public override void Up()
     {
-        Create.Table("reports")
+        Create.Table("report_requests")
             .WithColumn("id").AsInt64().PrimaryKey("reports_pk").Identity()
             .WithColumn("user_id").AsGuid().NotNullable()
             .WithColumn("good_id").AsGuid().NotNullable()
