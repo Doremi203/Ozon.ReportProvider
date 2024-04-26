@@ -1,4 +1,5 @@
 using Confluent.Kafka;
+using Ozon.ReportProvider.Domain.Events;
 using Ozon.ReportProvider.Domain.Interfaces;
 using Ozon.ReportProvider.Domain.Models;
 using Ozon.ReportProvider.Kafka;
@@ -15,7 +16,15 @@ public class ReportRequestHandler(
         try
         {
             var reportRequestEvent = result.Message.Value;
-            await reportRequestService.ProcessReportRequests([reportRequestEvent], cancellationToken);
+            var reportRequest = new ReportRequest
+            {
+                UserId = result.Message.Key,
+                StartOfPeriod = reportRequestEvent.StartOfPeriod,
+                EndOfPeriod = reportRequestEvent.EndOfPeriod,
+                GoodId = reportRequestEvent.GoodId,
+                LayoutId = reportRequestEvent.LayoutId
+            };
+            await reportRequestService.ProcessReportRequests([reportRequest], cancellationToken);
         }
         catch (Exception e)
         {
