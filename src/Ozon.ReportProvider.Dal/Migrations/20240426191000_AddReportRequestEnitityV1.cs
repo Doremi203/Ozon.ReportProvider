@@ -2,6 +2,7 @@ using FluentMigrator;
 
 namespace Ozon.ReportProvider.Dal.Migrations;
 
+[Migration(20240426191000, TransactionBehavior.None)]
 public class AddReportRequestEnitityV1 : Migration {
     public override void Up()
     {
