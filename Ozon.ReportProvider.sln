@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ozon.ReportProvider.Domain"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ozon.ReportProvider.IntegrationTests", "tests\Ozon.ReportProvider.IntegrationTests\Ozon.ReportProvider.IntegrationTests.csproj", "{233C3142-55A6-4707-B3EE-365E143501B1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ozon.ReportProvider.UnitTests", "tests\Ozon.ReportProvider.UnitTests\Ozon.ReportProvider.UnitTests.csproj", "{DF21ACE8-DDC0-4308-BEAF-F5E056119B98}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{233C3142-55A6-4707-B3EE-365E143501B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{233C3142-55A6-4707-B3EE-365E143501B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{233C3142-55A6-4707-B3EE-365E143501B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF21ACE8-DDC0-4308-BEAF-F5E056119B98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF21ACE8-DDC0-4308-BEAF-F5E056119B98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF21ACE8-DDC0-4308-BEAF-F5E056119B98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF21ACE8-DDC0-4308-BEAF-F5E056119B98}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{BD40078C-9CEB-460B-B150-1C11B8171BC8} = {D39E1E5F-A3D4-457B-991E-2F8D8E5769EA}
@@ -63,5 +69,6 @@ Global
 		{B713448C-16F2-4E2C-9904-877A8E84AFA5} = {D39E1E5F-A3D4-457B-991E-2F8D8E5769EA}
 		{CAF5BB4D-FDD9-4351-B8CC-3031EF06501D} = {D39E1E5F-A3D4-457B-991E-2F8D8E5769EA}
 		{233C3142-55A6-4707-B3EE-365E143501B1} = {98C35A54-EE7D-4F64-9E41-29F8BA7979A7}
+		{DF21ACE8-DDC0-4308-BEAF-F5E056119B98} = {98C35A54-EE7D-4F64-9E41-29F8BA7979A7}
 	EndGlobalSection
 EndGlobal
