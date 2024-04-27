@@ -54,19 +54,20 @@ public sealed class KafkaAsyncConsumer<TKey, TValue> : IDisposable
 
     private async Task HandleCore(CancellationToken token)
     {
-        await foreach (var consumeResults in _channel.Reader
-                           .ReadAllAsync(token)
-                           .Buffer(_channelCapacity, _bufferDelay)
-                           .WithCancellation(token))
+        try
         {
-            try
+            await foreach (var consumeResults in _channel.Reader
+                               .ReadAllAsync(token)
+                               .Buffer(_channelCapacity, _bufferDelay)
+                               .WithCancellation(token))
             {
                 await ProcessWithRetry(consumeResults, token);
             }
-            finally
-            {
-                _channel.Writer.Complete();
-            }
+        }
+        catch (Exception)
+        {
+            _channel.Writer.Complete();
+            throw;
         }
     }
 
