@@ -2,10 +2,17 @@
 
     <ItemGroup>
       <PackageReference Include="Dapper" />
+      <PackageReference Include="FluentMigrator" />
+      <PackageReference Include="FluentMigrator.Runner.Postgres" />
+      <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
       <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
       <PackageReference Include="Npgsql" />
       <PackageReference Include="Npgsql.DependencyInjection" />
       <PackageReference Include="StackExchange.Redis" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Ozon.ReportProvider.Domain\Ozon.ReportProvider.Domain.csproj" />
     </ItemGroup>
 
 </Project>
