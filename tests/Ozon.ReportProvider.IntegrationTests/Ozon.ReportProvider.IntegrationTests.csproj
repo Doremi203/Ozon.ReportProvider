@@ -16,4 +16,8 @@
         <Using Include="Xunit"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\Ozon.ReportProvider.Api\Ozon.ReportProvider.Api.csproj" />
+    </ItemGroup>
+
 </Project>
