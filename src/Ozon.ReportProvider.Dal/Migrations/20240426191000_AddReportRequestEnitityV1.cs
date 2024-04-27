@@ -12,10 +12,8 @@ DO $$
         IF not exists (select 1 from pg_type where typname = 'report_requests_v1') then
             create type report_requests_v1 as
             (
-                  id         bigint
-                , user_id      uuid
+                  request_id   uuid
                 , good_id      uuid
-                , layout_id    bigint
                 , start_of_period timestamp with time zone
                 , end_of_period timestamp with time zone
                 , created_at timestamp with time zone

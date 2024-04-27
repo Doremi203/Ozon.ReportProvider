@@ -8,20 +8,20 @@ namespace Ozon.ReportProvider.IntegrationTests.RepositoriesTests;
 [Collection(nameof(DalTestFixture))]
 public class ReportRequestRepositoryTests(DalTestFixture fixture)
 {
-    private IReportRequestRepository _repository = fixture.ReportRequestRepository;
+    private readonly IReportRequestRepository _repository = fixture.ReportRequestRepository;
     
     [Fact]
-    public async Task Add_ReportRequest_Success()
+    public async Task Add_Success()
     {
         // Arrange
-        var reportRequest = ReportRequestEntityV1Faker.Generate();
+        var reportRequests = ReportRequestEntityV1Faker.Generate(5);
+        var ids = reportRequests.Select(x => x.RequestId).ToArray();
         
         // Act
-        var ids = await _repository.Add(reportRequest, default);
-        var result = await _repository.GetById(ids[0], default);
+        await _repository.Add(reportRequests, default);
+        var result = await _repository.GetByIds(ids, default);
         
         // Assert
-        result.Should().NotBeNull();
-        result.Should().BeEquivalentTo(reportRequest[0].WithId(ids[0]));
+        result.Should().BeEquivalentTo(reportRequests);
     }
 }

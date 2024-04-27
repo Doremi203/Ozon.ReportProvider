@@ -7,10 +7,8 @@ public class InitScheme : Migration {
     public override void Up()
     {
         Create.Table("report_requests")
-            .WithColumn("id").AsInt64().PrimaryKey("reports_pk").Identity()
-            .WithColumn("user_id").AsGuid().NotNullable()
+            .WithColumn("request_id").AsGuid().PrimaryKey("report_requests_pk").NotNullable()
             .WithColumn("good_id").AsGuid().NotNullable()
-            .WithColumn("layout_id").AsInt64().NotNullable()
             .WithColumn("start_of_period").AsDateTimeOffset().NotNullable()
             .WithColumn("end_of_period").AsDateTimeOffset().NotNullable()
             .WithColumn("created_at").AsDateTimeOffset().NotNullable();
