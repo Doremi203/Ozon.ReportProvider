@@ -66,7 +66,7 @@ public sealed class KafkaAsyncConsumer<TKey, TValue> : IDisposable
         }
         catch (Exception)
         {
-            _channel.Writer.Complete();
+            _channel.Writer.TryComplete();
             throw;
         }
     }
@@ -108,6 +108,6 @@ public sealed class KafkaAsyncConsumer<TKey, TValue> : IDisposable
     public void Dispose()
     {
         _consumer.Close();
-        _channel.Writer.Complete();
+        _channel.Writer.TryComplete();
     }
 }
