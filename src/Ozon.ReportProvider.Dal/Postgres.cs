@@ -1,3 +1,4 @@
+using System.Transactions;
 using FluentMigrator.Runner;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -7,6 +8,19 @@ namespace Ozon.ReportProvider.Dal;
 
 public static class Postgres
 {
+    public const int DefaultTimeout = 10;
+
+    public static TransactionScope CreateTransactionScope(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
+    {
+        return new TransactionScope(
+            TransactionScopeOption.Required,
+            new TransactionOptions
+            {
+                IsolationLevel = isolationLevel,
+                Timeout = TimeSpan.FromMinutes(DefaultTimeout)
+            });
+    }
+
     public static void AddMigrations(this IServiceCollection services)
     {
         services.AddFluentMigratorCore()
