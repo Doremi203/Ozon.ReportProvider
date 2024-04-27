@@ -24,4 +24,32 @@ public class ReportRequestRepositoryTests(DalTestFixture fixture)
         // Assert
         result.Should().BeEquivalentTo(reportRequests);
     }
+    
+    [Fact]
+    public async Task GetByIds_Success()
+    {
+        // Arrange
+        var reportRequests = ReportRequestEntityV1Faker.Generate(5);
+        var ids = reportRequests.Select(x => x.RequestId).ToArray();
+        
+        // Act
+        await _repository.Add(reportRequests, default);
+        var result = await _repository.GetByIds(ids, default);
+        
+        // Assert
+        result.Should().BeEquivalentTo(reportRequests);
+    }
+    
+    [Fact]
+    public async Task GetByIds_NoSuchIds_ShouldReturnEmpty()
+    {
+        // Arrange
+        var ids = new[] { Guid.NewGuid(), Guid.NewGuid() };
+        
+        // Act
+        var result = await _repository.GetByIds(ids, default);
+        
+        // Assert
+        result.Should().BeEmpty();
+    }
 }
