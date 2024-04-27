@@ -13,8 +13,8 @@ DO $$
             create type report_requests_v1 as
             (
                   id         bigint
-                , user_id      text
-                , good_id      text
+                , user_id      uuid
+                , good_id      uuid
                 , layout_id    bigint
                 , start_of_period timestamp with time zone
                 , end_of_period timestamp with time zone
