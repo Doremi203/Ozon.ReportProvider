@@ -2,6 +2,8 @@ using Dapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Ozon.ReportProvider.Dal.Config;
+using Ozon.ReportProvider.Dal.Repositories;
+using Ozon.ReportProvider.Domain.Interfaces.Repositories;
 
 namespace Ozon.ReportProvider.Dal.Extensions;
 
@@ -14,9 +16,17 @@ public static class ServiceCollectionExtensions
     {
         services.AddInfrastructure(configuration);
         services.AddPostgres(configuration);
+        services.AddPostgresRepositories();
         services.AddRedisRepositories();
 
 
+        return services;
+    }
+
+    private static IServiceCollection AddPostgresRepositories(this IServiceCollection services)
+    {
+        services.AddScoped<IReportRequestRepository, ReportRequestRepository>();
+        
         return services;
     }
 
