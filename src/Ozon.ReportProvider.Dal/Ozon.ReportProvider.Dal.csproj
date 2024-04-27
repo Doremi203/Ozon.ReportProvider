@@ -11,4 +11,8 @@
       <PackageReference Include="StackExchange.Redis" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Ozon.ReportProvider.Domain\Ozon.ReportProvider.Domain.csproj" />
+    </ItemGroup>
+
 </Project>
