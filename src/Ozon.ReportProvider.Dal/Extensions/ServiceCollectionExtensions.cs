@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Ozon.ReportProvider.Dal.Config;
 using Ozon.ReportProvider.Dal.Repositories;
+using Ozon.ReportProvider.Domain.Entities;
 using Ozon.ReportProvider.Domain.Interfaces.Repositories;
 
 namespace Ozon.ReportProvider.Dal.Extensions;
@@ -53,11 +54,14 @@ public static class ServiceCollectionExtensions
     {
         DefaultTypeMap.MatchNamesWithUnderscores = true;
 
-        var dataBaseOptions = configuration.Get<DatabaseOptions>()
-                              ?? throw new ArgumentNullException(nameof(DatabaseOptions),
-                                  "DataBaseOptions is not configured");
+        var dataBaseOptions = configuration.GetSection(nameof(DatabaseOptions)).Get<DatabaseOptions>()
+            ?? throw new ArgumentNullException(nameof(DatabaseOptions), "Database options are not set");
 
-        services.AddNpgsqlDataSource(dataBaseOptions.ConnectionString);
+        services.AddNpgsqlDataSource(dataBaseOptions.ConnectionString,
+            builder =>
+            {
+                builder.MapComposite<ReportRequestEntityV1>("report_requests_v1", builder.DefaultNameTranslator);
+            });
 
         return services;
     }
