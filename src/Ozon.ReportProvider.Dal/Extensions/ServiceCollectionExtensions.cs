@@ -27,7 +27,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddPostgresRepositories(this IServiceCollection services)
     {
         services.AddScoped<IReportRequestRepository, ReportRequestRepository>();
-        
+
         return services;
     }
 
@@ -55,9 +55,11 @@ public static class ServiceCollectionExtensions
         DefaultTypeMap.MatchNamesWithUnderscores = true;
 
         var dataBaseOptions = configuration.GetSection(nameof(DatabaseOptions)).Get<DatabaseOptions>()
-            ?? throw new ArgumentNullException(nameof(DatabaseOptions), "Database options are not set");
+                              ?? throw new ArgumentNullException(nameof(DatabaseOptions),
+                                  "Database options are not set");
 
-        services.AddNpgsqlDataSource(dataBaseOptions.ConnectionString,
+        services.AddNpgsqlDataSource(
+            dataBaseOptions.ConnectionString,
             builder =>
             {
                 builder.MapComposite<ReportRequestEntityV1>("report_requests_v1", builder.DefaultNameTranslator);
