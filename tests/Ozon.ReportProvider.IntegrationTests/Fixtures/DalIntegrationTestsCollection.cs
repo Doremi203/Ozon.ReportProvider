@@ -1,4 +1,4 @@
 namespace Ozon.ReportProvider.IntegrationTests.Fixtures;
 
-[Collection(nameof(DalTestFixture))]
+[CollectionDefinition(nameof(DalTestFixture))]
 public class DalIntegrationTestsCollection : ICollectionFixture<DalTestFixture>;
