@@ -26,11 +26,14 @@ public class DalTestFixture
             .Build();
         
         ClearDatabase(host);
+        host.MigrateUp();
         
         var scope = host.Services.CreateScope();
         var serviceProvider = scope.ServiceProvider;
         
         ReportRequestRepository = serviceProvider.GetRequiredService<IReportRequestRepository>();
+        
+        FluentAssertionOptions.UseDefaultPrecision();
     }
 
     private static void ClearDatabase(IHost host)

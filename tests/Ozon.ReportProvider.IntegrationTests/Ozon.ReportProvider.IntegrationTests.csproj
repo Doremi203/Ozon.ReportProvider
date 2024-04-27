@@ -8,6 +8,7 @@
     <ItemGroup>
         <PackageReference Include="AutoBogus" />
         <PackageReference Include="coverlet.collector" />
+        <PackageReference Include="FluentAssertions" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
         <PackageReference Include="Moq" />
         <PackageReference Include="xunit" />
@@ -20,6 +21,13 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\Ozon.ReportProvider.Api\Ozon.ReportProvider.Api.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="..\..\src\Ozon.ReportProvider.Api\appsettings.json">
+            <Link>appsettings.json</Link>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
 </Project>
