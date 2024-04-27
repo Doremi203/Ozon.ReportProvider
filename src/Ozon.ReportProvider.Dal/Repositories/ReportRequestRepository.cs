@@ -9,16 +9,17 @@ public class ReportRequestRepository(
     NpgsqlDataSource dataSource
 ) : IReportRequestRepository
 {
-    public async Task Add(ReportRequestEntityV1[] reportRequests, CancellationToken token)
+    public async Task<long[]> Add(ReportRequestEntityV1[] reportRequests, CancellationToken token)
     {
         const string sql = @"
 insert into report_requests (id, user_id, good_id, layout_id, start_of_period, end_of_period, created_at)
 select id, user_id, good_id, layout_id, start_of_period, end_of_period, created_at
 from unnest(@ReportRequests)
+returning id
 ";
         await using var connection = await dataSource.OpenConnectionAsync(token);
 
-        await connection.ExecuteAsync(
+        var ids = await connection.QueryAsync<long>(
             new CommandDefinition(
                 sql,
                 new
@@ -29,6 +30,8 @@ from unnest(@ReportRequests)
                 commandTimeout: Postgres.DefaultTimeout
             )
         );
+        
+        return ids.ToArray();
     }
 
     public async Task<ReportRequestEntityV1[]> GetByUserId(Guid userId, CancellationToken token)
