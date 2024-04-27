@@ -15,7 +15,7 @@ public sealed class KafkaAsyncConsumer<TKey, TValue> : IDisposable
     private readonly IConsumer<TKey, TValue> _consumer;
     private readonly Channel<ConsumeResult<TKey, TValue>> _channel;
     private readonly ILogger<KafkaAsyncConsumer<TKey, TValue>> _logger;
-    private readonly AsyncRetryPolicy _policy;
+    private readonly AsyncPolicy _policy;
     private readonly int _channelCapacity;
     private readonly TimeSpan _bufferDelay;
 
@@ -23,28 +23,16 @@ public sealed class KafkaAsyncConsumer<TKey, TValue> : IDisposable
         IOptions<KafkaSettings> options,
         ILogger<KafkaAsyncConsumer<TKey, TValue>> logger,
         IHandler<TKey, TValue> handler,
-        IDeserializer<TKey>? keyDeserializer,
-        IDeserializer<TValue>? valueDeserializer
+        IConsumer<TKey, TValue> consumer,
+        AsyncPolicy policy
     )
     {
         _handler = handler;
         _logger = logger;
+        _consumer = consumer;
         _channelCapacity = options.Value.ChannelCapacity;
         _bufferDelay = TimeSpan.FromSeconds(options.Value.BufferDelay);
-
-        _policy = Policy
-            .Handle<Exception>()
-            .WaitAndRetryForeverAsync(
-                x =>
-                {
-                    var exponentDelay = Math.Pow(2, x);
-                    return TimeSpan.FromSeconds(exponentDelay);
-                },
-                (exception, retry, _) =>
-                {
-                    _logger.LogError(exception, $"Error while handling message, retry number: {retry}");
-                }
-            );
+        _policy = policy;
 
         _channel = Channel.CreateBounded<ConsumeResult<TKey, TValue>>(
             new BoundedChannelOptions(_channelCapacity)
@@ -54,22 +42,6 @@ public sealed class KafkaAsyncConsumer<TKey, TValue> : IDisposable
                 AllowSynchronousContinuations = true,
                 FullMode = BoundedChannelFullMode.Wait
             });
-
-        var config = new ConsumerConfig
-        {
-            BootstrapServers = options.Value.BootstrapServers,
-            GroupId = options.Value.GroupId,
-            AutoOffsetReset = AutoOffsetReset.Earliest,
-            EnableAutoCommit = true,
-            EnableAutoOffsetStore = false
-        };
-
-        _consumer = new ConsumerBuilder<TKey, TValue>(config)
-            .SetKeyDeserializer(keyDeserializer)
-            .SetValueDeserializer(valueDeserializer)
-            .Build();
-
-        _consumer.Subscribe(options.Value.Topic);
     }
 
     public Task Consume(CancellationToken token)
@@ -82,19 +54,20 @@ public sealed class KafkaAsyncConsumer<TKey, TValue> : IDisposable
 
     private async Task HandleCore(CancellationToken token)
     {
-        await foreach (var consumeResults in _channel.Reader
-                           .ReadAllAsync(token)
-                           .Buffer(_channelCapacity, _bufferDelay)
-                           .WithCancellation(token))
+        try
         {
-            try
+            await foreach (var consumeResults in _channel.Reader
+                               .ReadAllAsync(token)
+                               .Buffer(_channelCapacity, _bufferDelay)
+                               .WithCancellation(token))
             {
                 await ProcessWithRetry(consumeResults, token);
             }
-            finally
-            {
-                _channel.Writer.Complete();
-            }
+        }
+        catch (Exception)
+        {
+            _channel.Writer.TryComplete();
+            throw;
         }
     }
 
@@ -115,12 +88,13 @@ public sealed class KafkaAsyncConsumer<TKey, TValue> : IDisposable
         _channel.Writer.Complete();
     }
 
-    private async Task ProcessWithRetry(IReadOnlyList<ConsumeResult<TKey, TValue>> consumeResults, CancellationToken token)
+    private async Task ProcessWithRetry(IReadOnlyList<ConsumeResult<TKey, TValue>> consumeResults,
+        CancellationToken token)
     {
         await _policy.ExecuteAsync(async () =>
         {
             await _handler.Handle(consumeResults, token);
-            
+
             var partitionLastOffsets = consumeResults
                 .GroupBy(
                     r => r.Partition.Value,
@@ -134,6 +108,6 @@ public sealed class KafkaAsyncConsumer<TKey, TValue> : IDisposable
     public void Dispose()
     {
         _consumer.Close();
-        _channel.Writer.Complete();
+        _channel.Writer.TryComplete();
     }
 }
