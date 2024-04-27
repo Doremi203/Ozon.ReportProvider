@@ -10,10 +10,8 @@ public static class ReportRequestEntityV1Faker
     private static readonly object Lock = new();
 
     private static readonly Faker<ReportRequestEntityV1> Faker = new AutoFaker<ReportRequestEntityV1>()
-        .RuleFor(x => x.Id, _ => Create.RandomId())
-        .RuleFor(x => x.UserId, f => f.Random.Guid())
+        .RuleFor(x => x.RequestId, f => f.Random.Guid())
         .RuleFor(x => x.GoodId, f => f.Random.Guid())
-        .RuleFor(x => x.LayoutId, f => f.Random.Long(1, 100))
         .RuleFor(x => x.StartOfPeriod, f => f.Date.RecentOffset().UtcDateTime)
         .RuleFor(x => x.EndOfPeriod, f => f.Date.RecentOffset().UtcDateTime)
         .RuleFor(x => x.CreatedAt, f => f.Date.RecentOffset().UtcDateTime);
@@ -32,25 +30,15 @@ public static class ReportRequestEntityV1Faker
         }
     }
     
-    public static ReportRequestEntityV1 WithId(
+    public static ReportRequestEntityV1 WithRequestId(
         this ReportRequestEntityV1 src,
-        long id)
-        => src with { Id = id };
-    
-    public static ReportRequestEntityV1 WithUserId(
-        this ReportRequestEntityV1 src,
-        Guid userId)
-        => src with { UserId = userId };
+        Guid requestId)
+        => src with { RequestId = requestId };
     
     public static ReportRequestEntityV1 WithGoodId(
         this ReportRequestEntityV1 src,
         Guid goodId)
         => src with { GoodId = goodId };
-    
-    public static ReportRequestEntityV1 WithLayoutId(
-        this ReportRequestEntityV1 src,
-        long layoutId)
-        => src with { LayoutId = layoutId };
     
     public static ReportRequestEntityV1 WithPeriod(
         this ReportRequestEntityV1 src,
