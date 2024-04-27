@@ -18,6 +18,6 @@ public class InitScheme : Migration {
 
     public override void Down()
     {
-        Delete.Table("reports");
+        Delete.Table("report_requests");
     }
 }
