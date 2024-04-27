@@ -34,6 +34,34 @@ returning id
         return ids.ToArray();
     }
 
+    public async Task<ReportRequestEntityV1?> GetById(long id, CancellationToken token)
+    {
+        const string sql = @"
+select id
+     , user_id
+     , good_id
+     , layout_id
+     , start_of_period
+     , end_of_period
+     , created_at
+from report_requests
+where id = @Id
+";
+        await using var connection = await dataSource.OpenConnectionAsync(token);
+
+        return await connection.QueryFirstOrDefaultAsync<ReportRequestEntityV1>(
+            new CommandDefinition(
+                sql,
+                new
+                {
+                    Id = id
+                },
+                cancellationToken: token,
+                commandTimeout: Postgres.DefaultTimeout
+            )
+        );
+    }
+
     public async Task<ReportRequestEntityV1[]> GetByUserId(Guid userId, CancellationToken token)
     {
         const string sql = @"
