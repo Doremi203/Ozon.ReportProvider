@@ -15,7 +15,7 @@ public sealed class KafkaAsyncConsumer<TKey, TValue> : IDisposable
     private readonly IConsumer<TKey, TValue> _consumer;
     private readonly Channel<ConsumeResult<TKey, TValue>> _channel;
     private readonly ILogger<KafkaAsyncConsumer<TKey, TValue>> _logger;
-    private readonly AsyncRetryPolicy _policy;
+    private readonly AsyncPolicy _policy;
     private readonly int _channelCapacity;
     private readonly TimeSpan _bufferDelay;
 
@@ -24,7 +24,7 @@ public sealed class KafkaAsyncConsumer<TKey, TValue> : IDisposable
         ILogger<KafkaAsyncConsumer<TKey, TValue>> logger,
         IHandler<TKey, TValue> handler,
         IConsumer<TKey, TValue> consumer,
-        AsyncRetryPolicy policy
+        AsyncPolicy policy
     )
     {
         _handler = handler;
