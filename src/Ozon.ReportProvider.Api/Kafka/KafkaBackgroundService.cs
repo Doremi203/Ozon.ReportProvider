@@ -14,9 +14,9 @@ public class KafkaBackgroundService<TKey, TValue, THandler>(
     IDeserializer<TValue>? valueDeserializer
 ) : BackgroundService where THandler : IHandler<TKey, TValue>
 {
-    private readonly KafkaConsumer<TKey, TValue> _consumer = new(
+    private readonly KafkaAsyncConsumer<TKey, TValue> _asyncConsumer = new(
         settings,
-        serviceProvider.GetRequiredService<ILogger<KafkaConsumer<TKey, TValue>>>(),
+        serviceProvider.GetRequiredService<ILogger<KafkaAsyncConsumer<TKey, TValue>>>(),
         handler,
         keyDeserializer,
         valueDeserializer
@@ -24,7 +24,7 @@ public class KafkaBackgroundService<TKey, TValue, THandler>(
 
     public override Task StopAsync(CancellationToken cancellationToken)
     {
-        _consumer.Dispose();
+        _asyncConsumer.Dispose();
 
         return Task.CompletedTask;
     }
@@ -33,7 +33,7 @@ public class KafkaBackgroundService<TKey, TValue, THandler>(
     {
         try
         {
-            await _consumer.Consume(stoppingToken);
+            await _asyncConsumer.Consume(stoppingToken);
         }
         catch (Exception ex)
         {

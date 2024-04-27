@@ -10,16 +10,16 @@ public class ReportRequestHandler(
     IReportRequestService reportRequestService
     ) : IHandler<Ignore, ReportRequestEvent>
 {
-    public async Task Handle(ConsumeResult<Ignore, ReportRequestEvent> result, CancellationToken cancellationToken)
+    public async Task Handle(IReadOnlyList<ConsumeResult<Ignore, ReportRequestEvent>> messages, CancellationToken cancellationToken)
     {
         try
         {
-            var reportRequestEvent = result.Message.Value;
-            await reportRequestService.ProcessReportRequests([reportRequestEvent], cancellationToken);
+            var reportRequestEvents = messages.Select(x => x.Message.Value).ToArray();
+            await reportRequestService.ProcessReportRequests(reportRequestEvents, cancellationToken);
         }
         catch (Exception e)
         {
-            logger.LogError(e, $"Failed to process message with offset: {result.Offset.Value}");
+            logger.LogError(e, $"Failed to process messages with starting offset: {messages[0].Offset.Value}");
             throw;
         }
     }
