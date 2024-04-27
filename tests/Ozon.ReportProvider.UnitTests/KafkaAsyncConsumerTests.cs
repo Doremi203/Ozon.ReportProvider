@@ -1,3 +1,4 @@
+using System.Threading.Channels;
 using Confluent.Kafka;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -132,5 +133,79 @@ public class KafkaAsyncConsumerTests
 
         // Assert
         _handlerFake.Verify(x => x.Handle(It.IsAny<IReadOnlyList<ConsumeResult<Ignore, int>>>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
+    }
+    
+    [Fact]
+    public async Task Consume_ThrowException_ShouldBeThrowedUpCorrectly()
+    {
+        // Arrange
+        var consumeResult = new ConsumeResult<Ignore, int>
+        {
+            Message = new Message<Ignore, int>
+            {
+                Value = 42
+            }
+        };
+        const int expectedCount = 10;
+        var counter = expectedCount;
+        var expectedException = new Exception("Test exception");
+
+        _consumerFake.Setup(x => x.Consume(It.IsAny<CancellationToken>()))
+            .Returns(() =>
+            {
+                if (counter-- > 0)
+                {
+                    return consumeResult;
+                }
+
+                return default!;
+            });
+
+        _handlerFake.Setup(x =>
+                x.Handle(It.IsAny<IReadOnlyList<ConsumeResult<Ignore, int>>>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(expectedException);
+
+        // Act
+        var act = new Func<Task>(async () => await _kafkaAsyncConsumer.Consume(default));
+        
+        // Assert
+        await Assert.ThrowsAsync<Exception>(act);
+    }
+    
+    [Fact]
+    public async Task Dispose_ShouldCompleteChannelAndCloseConsumer()
+    {
+        // Arrange
+        var consumeResult = new ConsumeResult<Ignore, int>
+        {
+            Message = new Message<Ignore, int>
+            {
+                Value = 42
+            }
+        };
+        const int expectedCount = 20;
+        var counter = expectedCount;
+
+        _consumerFake.Setup(x => x.Consume(It.IsAny<CancellationToken>()))
+            .Returns(() =>
+            {
+                if (counter-- > 0)
+                {
+                    return consumeResult;
+                }
+
+                return default!;
+            });
+
+        // Act
+        _kafkaAsyncConsumer.Dispose();
+        var act = new Func<Task>(async () => await _kafkaAsyncConsumer.Consume(default));
+
+        // Assert
+        await Assert.ThrowsAsync<ChannelClosedException>(act);
+        
+        _consumerFake.Verify(x => x.Consume(It.IsAny<CancellationToken>()), Times.Once);
+        _consumerFake.Verify(x => x.Close(), Times.Once);
+        _handlerFake.Verify(x => x.Handle(It.IsAny<IReadOnlyList<ConsumeResult<Ignore, int>>>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 }
