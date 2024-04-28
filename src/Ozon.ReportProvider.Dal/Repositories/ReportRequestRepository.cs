@@ -2,6 +2,7 @@ using Dapper;
 using Npgsql;
 using Ozon.ReportProvider.Domain.Entities;
 using Ozon.ReportProvider.Domain.Interfaces.Repositories;
+using Ozon.ReportProvider.Domain.Models;
 
 namespace Ozon.ReportProvider.Dal.Repositories;
 
@@ -24,6 +25,28 @@ from unnest(@ReportRequests)
                 new
                 {
                     ReportRequests = reportRequests
+                },
+                cancellationToken: token,
+                commandTimeout: Postgres.DefaultTimeout
+            )
+        );
+    }
+
+    public async Task AssignReportToRequest(AssignReportModel model, CancellationToken token)
+    {
+        const string sql = @"
+insert into request_reports (request_id, report_id)
+values (@RequestId, @ReportId)
+";
+        await using var connection = await dataSource.OpenConnectionAsync(token);
+
+        await connection.ExecuteAsync(
+            new CommandDefinition(
+                sql,
+                new
+                {
+                    model.RequestId,
+                    model.ReportId
                 },
                 cancellationToken: token,
                 commandTimeout: Postgres.DefaultTimeout

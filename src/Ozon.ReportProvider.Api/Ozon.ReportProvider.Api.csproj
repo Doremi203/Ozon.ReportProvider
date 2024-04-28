@@ -4,6 +4,7 @@
     <PackageReference Include="Grpc.AspNetCore.Server.Reflection" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Ozon.ReportProvider.Bll\Ozon.ReportProvider.Bll.csproj" />
     <ProjectReference Include="..\Ozon.ReportProvider.Dal\Ozon.ReportProvider.Dal.csproj" />
     <ProjectReference Include="..\Ozon.ReportProvider.Domain\Ozon.ReportProvider.Domain.csproj" />
     <ProjectReference Include="..\Ozon.ReportProvider.Kafka\Ozon.ReportProvider.Kafka.csproj" />
