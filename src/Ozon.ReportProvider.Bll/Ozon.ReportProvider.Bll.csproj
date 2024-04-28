@@ -2,6 +2,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Ozon.ReportProvider.Domain\Ozon.ReportProvider.Domain.csproj" />
+      <ProjectReference Include="..\Ozon.ReportProvider.Utils\Ozon.ReportProvider.Utils.csproj" />
     </ItemGroup>
 
 </Project>

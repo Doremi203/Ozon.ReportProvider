@@ -1,4 +1,4 @@
-namespace Ozon.ReportProvider.Bll.Infrastructure;
+namespace Ozon.ReportProvider.Utils.Providers;
 
 public interface IDateTimeOffsetProvider
 {
