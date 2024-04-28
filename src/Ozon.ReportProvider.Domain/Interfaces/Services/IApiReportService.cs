@@ -1,6 +1,6 @@
-using Ozon.ReportProvider.Api.Models;
+using Ozon.ReportProvider.Domain.Models;
 
-namespace Ozon.ReportProvider.Api.Services;
+namespace Ozon.ReportProvider.Domain.Interfaces.Services;
 
 public interface IApiReportService
 {
