@@ -15,7 +15,7 @@ public class ReportRequestHandler(
         try
         {
             var reportRequestEvents = messages.Select(x => x.Message.Value).ToArray();
-            await reportRequestService.StoreReportRequests(reportRequestEvents, cancellationToken);
+            await reportRequestService.ProcessReportRequests(reportRequestEvents, cancellationToken);
         }
         catch (Exception e)
         {
