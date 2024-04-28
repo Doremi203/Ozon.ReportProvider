@@ -9,8 +9,6 @@ namespace Ozon.ReportProvider.IntegrationTests.Fixtures;
 
 public class DalTestFixture
 {
-    public IReportRequestRepository ReportRequestRepository { get; }
-    
     public DalTestFixture()
     {
         var configuration = new ConfigurationBuilder()
@@ -31,7 +29,7 @@ public class DalTestFixture
         var scope = host.Services.CreateScope();
         var serviceProvider = scope.ServiceProvider;
         
-        ReportRequestRepository = serviceProvider.GetRequiredService<IReportRequestRepository>();
+        
         
         FluentAssertionOptions.UseDefaultPrecision();
     }

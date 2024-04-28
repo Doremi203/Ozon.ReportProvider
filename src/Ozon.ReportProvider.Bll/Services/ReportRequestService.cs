@@ -17,9 +17,4 @@ public class ReportRequestService(
         
         await reportService.StoreReports(reports, token);
     }
-
-    public Task<ReportRequestEntityV1[]> GetUncompletedReportRequests(int limit, CancellationToken token)
-    {
-        throw new NotImplementedException();
-    }
 }
