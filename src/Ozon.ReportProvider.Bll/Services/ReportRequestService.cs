@@ -3,7 +3,6 @@ using Ozon.ReportProvider.Domain.Entities;
 using Ozon.ReportProvider.Domain.Events;
 using Ozon.ReportProvider.Domain.Interfaces.Repositories;
 using Ozon.ReportProvider.Domain.Interfaces.Services;
-using Ozon.ReportProvider.Domain.Models;
 using Ozon.ReportProvider.Utils.Providers;
 
 namespace Ozon.ReportProvider.Bll.Services;
@@ -13,7 +12,7 @@ public class ReportRequestService(
     IReportRequestRepository requestRepository
 ) : IReportRequestService
 {
-    public async Task ProcessReportRequests(ReportRequestEvent[] reportRequestEvents, CancellationToken token)
+    public async Task StoreReportRequests(ReportRequestEvent[] reportRequestEvents, CancellationToken token)
     {
         var createdAt = dateTimeOffsetProvider.UtcNow;
         var reportRequests = reportRequestEvents.Select(e =>
@@ -21,5 +20,10 @@ public class ReportRequestService(
         ).ToArray();
 
         await requestRepository.Add(reportRequests, token);
+    }
+
+    public Task<ReportRequestEntityV1[]> GetUncompletedReportRequests(int limit, CancellationToken token)
+    {
+        throw new NotImplementedException();
     }
 }
