@@ -6,10 +6,15 @@ namespace Ozon.ReportProvider.Dal.Migrations;
 public class InitScheme : Migration {
     public override void Up()
     {
-        Create.Table("reports")
-            .WithColumn("request_id").AsInt64().PrimaryKey("reports_pk").NotNullable()
-            .WithColumn("conversion_ratio").AsDecimal().NotNullable()
-            .WithColumn("sold_count").AsInt32().NotNullable();
+        const string sql = @"
+create table reports
+(
+    request_id       bigint not null primary key,
+    conversion_ratio numeric not null,
+    sold_count       bigint not null
+);
+";
+        Execute.Sql(sql);
     }
 
     public override void Down()
