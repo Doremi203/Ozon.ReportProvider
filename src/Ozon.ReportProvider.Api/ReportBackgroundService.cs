@@ -1,9 +1,10 @@
 using Mapster;
 using Microsoft.Extensions.Options;
 using Ozon.ReportProvider.Api.Config;
+using Ozon.ReportProvider.Api.Models;
 using Ozon.ReportProvider.Api.Services;
 using Ozon.ReportProvider.Domain.Interfaces.Services;
-using Ozon.ReportProvider.Domain.Models;
+using Report = Ozon.ReportProvider.Domain.Models.Report;
 
 namespace Ozon.ReportProvider.Api;
 
@@ -25,9 +26,9 @@ public class ReportBackgroundService(
             var reportRequests = 
                 await reportRequestService.GetUncompletedReportRequests(maxBatchSize, stoppingToken);
             var reports = await apiReportService.GetReports(
-                reportRequests.Adapt<RequestReportModel[]>(), stoppingToken);
+                reportRequests.Adapt<GetReportModel[]>(), stoppingToken);
             
-            await reportService.StoreReports(reports, stoppingToken);
+            await reportService.StoreReports(reports.Adapt<Report[]>(), stoppingToken);
             
             await Task.Delay(pollingInterval, stoppingToken);
         }
