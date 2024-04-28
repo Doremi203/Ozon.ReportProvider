@@ -4,5 +4,6 @@ namespace Ozon.ReportProvider.Domain.Interfaces.Services;
 
 public interface IReportService
 {
-    Task<Report> GetRequestedReports(RequestReportModel[] models, CancellationToken token);
+    Task StoreReports(Report[] reports, CancellationToken token);
+    Task<Report[]> GetReports(RequestReportModel[] models, CancellationToken token);
 }  
