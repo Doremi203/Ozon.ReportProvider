@@ -4,5 +4,5 @@ namespace Ozon.ReportProvider.Domain.Interfaces.Services;
 
 public interface IReportRequestService
 {
-    Task ProcessReportRequests(ReportRequestEvent[] reportRequests, CancellationToken cancellationToken);
+    Task ProcessReportRequests(ReportRequestEvent[] reportRequestEvents, CancellationToken token);
 }
