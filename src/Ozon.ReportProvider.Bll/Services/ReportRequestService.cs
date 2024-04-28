@@ -10,7 +10,6 @@ namespace Ozon.ReportProvider.Bll.Services;
 
 public class ReportRequestService(
     IDateTimeOffsetProvider dateTimeOffsetProvider,
-    IReportService reportService,
     IReportRequestRepository requestRepository
 ) : IReportRequestService
 {
@@ -22,7 +21,5 @@ public class ReportRequestService(
         ).ToArray();
 
         await requestRepository.Add(reportRequests, token);
-
-        await reportService.RequestReports(reportRequests.Adapt<RequestReportModel[]>(), token);
     }
 }
