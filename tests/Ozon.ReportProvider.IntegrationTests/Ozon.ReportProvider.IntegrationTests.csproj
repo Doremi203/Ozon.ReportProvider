@@ -30,9 +30,4 @@
         </Content>
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Fakers\" />
-      <Folder Include="RepositoriesTests\" />
-    </ItemGroup>
-
 </Project>
