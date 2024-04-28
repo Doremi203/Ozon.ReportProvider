@@ -6,16 +6,14 @@ namespace Ozon.ReportProvider.Dal.Migrations;
 public class InitScheme : Migration {
     public override void Up()
     {
-        Create.Table("report_requests")
-            .WithColumn("request_id").AsGuid().PrimaryKey("report_requests_pk").NotNullable()
-            .WithColumn("good_id").AsGuid().NotNullable()
-            .WithColumn("start_of_period").AsDateTimeOffset().NotNullable()
-            .WithColumn("end_of_period").AsDateTimeOffset().NotNullable()
-            .WithColumn("created_at").AsDateTimeOffset().NotNullable();
+        Create.Table("reports")
+            .WithColumn("request_id").AsInt64().PrimaryKey("reports_pk").NotNullable()
+            .WithColumn("conversion_ratio").AsDecimal().NotNullable()
+            .WithColumn("sold_count").AsInt32().NotNullable();
     }
 
     public override void Down()
     {
-        Delete.Table("report_requests");
+        Delete.Table("reports");
     }
 }
