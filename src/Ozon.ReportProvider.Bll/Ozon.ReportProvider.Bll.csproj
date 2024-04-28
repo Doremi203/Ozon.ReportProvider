@@ -1,0 +1,7 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+      <ProjectReference Include="..\Ozon.ReportProvider.Domain\Ozon.ReportProvider.Domain.csproj" />
+    </ItemGroup>
+
+</Project>
