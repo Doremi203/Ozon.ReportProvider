@@ -1,5 +1,4 @@
 using Mapster;
-using Ozon.ReportProvider.Domain.Entities;
 using Ozon.ReportProvider.Domain.Events;
 using Ozon.ReportProvider.Domain.Interfaces.Services;
 using Ozon.ReportProvider.Domain.Models;
