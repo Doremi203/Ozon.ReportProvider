@@ -32,6 +32,30 @@ from unnest(@Reports)
         );
     }
 
+    public async Task<ReportEntityV1?> GetReport(RequestId requestId, CancellationToken token)
+    {
+        const string sql = @"
+select request_id
+     , conversion_ratio
+     , sold_count
+from reports
+where request_id = @RequestId
+";
+        await using var connection = await dataSource.OpenConnectionAsync(token);
+
+        return await connection.QueryFirstOrDefaultAsync<ReportEntityV1>(
+            new CommandDefinition(
+                sql,
+                new
+                {
+                    RequestId = requestId.Value
+                },
+                cancellationToken: token,
+                commandTimeout: Postgres.DefaultTimeout
+            )
+        );
+    }
+
     public async Task<ReportEntityV1[]> GetReports(RequestId[] requestIds, CancellationToken token)
     {
         const string sql = @"
