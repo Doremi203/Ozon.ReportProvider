@@ -1,8 +1,8 @@
 using Ozon.ReportProvider.Domain.ValueTypes;
 
-namespace Ozon.ReportProvider.Domain.Events;
+namespace Ozon.ReportProvider.Domain.Models;
 
-public record ReportRequestEvent
+public record ApiGetReportModel
 {
     public required RequestId RequestId { get; init; }
     public required GoodId GoodId { get; init; }

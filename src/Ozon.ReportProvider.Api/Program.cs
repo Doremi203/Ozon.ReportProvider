@@ -1,3 +1,4 @@
+using Ozon.ReportProvider.Api.Config;
 using Ozon.ReportProvider.Dal.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +9,7 @@ var configuration = builder.Configuration;
 services.AddGrpc();
 services.AddGrpcReflection();
 
+MapsterConfig.Configure();
 services.AddDal(configuration);
 
 var app = builder.Build();

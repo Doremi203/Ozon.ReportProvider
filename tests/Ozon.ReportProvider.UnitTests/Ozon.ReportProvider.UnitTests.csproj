@@ -10,6 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AutoBogus" />
         <PackageReference Include="coverlet.collector" Version="6.0.0"/>
         <PackageReference Include="FluentAssertions" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0"/>
@@ -23,6 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\src\Ozon.ReportProvider.Bll\Ozon.ReportProvider.Bll.csproj" />
       <ProjectReference Include="..\..\src\Ozon.ReportProvider.Kafka\Ozon.ReportProvider.Kafka.csproj" />
     </ItemGroup>
 

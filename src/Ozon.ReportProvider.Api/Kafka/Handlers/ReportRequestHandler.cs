@@ -1,4 +1,6 @@
 using Confluent.Kafka;
+using Mapster;
+using Ozon.ReportProvider.Api.Contracts;
 using Ozon.ReportProvider.Domain.Events;
 using Ozon.ReportProvider.Domain.Interfaces.Services;
 using Ozon.ReportProvider.Kafka;
@@ -8,14 +10,14 @@ namespace Ozon.ReportProvider.Api.Kafka.Handlers;
 public class ReportRequestHandler(
     ILogger<ReportRequestHandler> logger,
     IReportRequestService reportRequestService
-    ) : IHandler<Ignore, ReportRequestEvent>
+    ) : IHandler<Ignore, ReportRequestEventContract>
 {
-    public async Task Handle(IReadOnlyList<ConsumeResult<Ignore, ReportRequestEvent>> messages, CancellationToken cancellationToken)
+    public async Task Handle(IReadOnlyList<ConsumeResult<Ignore, ReportRequestEventContract>> messages, CancellationToken cancellationToken)
     {
         try
         {
             var reportRequestEvents = messages.Select(x => x.Message.Value).ToArray();
-            await reportRequestService.StoreReportRequests(reportRequestEvents, cancellationToken);
+            await reportRequestService.ProcessReportRequests(reportRequestEvents.Adapt<ReportRequestEvent[]>(), cancellationToken);
         }
         catch (Exception e)
         {

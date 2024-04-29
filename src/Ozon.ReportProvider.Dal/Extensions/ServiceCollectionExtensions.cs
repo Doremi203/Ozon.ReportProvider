@@ -26,8 +26,8 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddPostgresRepositories(this IServiceCollection services)
     {
-        services.AddScoped<IReportRequestRepository, ReportRequestRepository>();
-
+        services.AddScoped<IReportRepository, ReportRepository>();
+        
         return services;
     }
 
@@ -62,7 +62,7 @@ public static class ServiceCollectionExtensions
             dataBaseOptions.ConnectionString,
             builder =>
             {
-                builder.MapComposite<ReportRequestEntityV1>("report_requests_v1", builder.DefaultNameTranslator);
+                builder.MapComposite<ReportEntityV1>("reports_v1", builder.DefaultNameTranslator);
             });
 
         return services;
