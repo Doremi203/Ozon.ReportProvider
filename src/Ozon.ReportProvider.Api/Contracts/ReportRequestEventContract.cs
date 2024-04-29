@@ -1,6 +1,6 @@
-namespace Ozon.ReportProvider.Domain.Models;
+namespace Ozon.ReportProvider.Api.Contracts;
 
-public record GetReportModel
+public record ReportRequestEventContract
 {
     public required long RequestId { get; init; }
     public required long GoodId { get; init; }

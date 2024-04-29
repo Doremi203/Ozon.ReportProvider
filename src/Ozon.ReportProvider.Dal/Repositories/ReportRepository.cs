@@ -2,6 +2,7 @@ using Dapper;
 using Npgsql;
 using Ozon.ReportProvider.Domain.Entities;
 using Ozon.ReportProvider.Domain.Interfaces.Repositories;
+using Ozon.ReportProvider.Domain.ValueTypes;
 
 namespace Ozon.ReportProvider.Dal.Repositories;
 
@@ -31,7 +32,7 @@ from unnest(@Reports)
         );
     }
 
-    public async Task<ReportEntityV1[]> GetReports(long[] requestIds, CancellationToken token)
+    public async Task<ReportEntityV1[]> GetReports(RequestId[] requestIds, CancellationToken token)
     {
         const string sql = @"
 select request_id
@@ -47,7 +48,7 @@ where request_id = any(@RequestIds)
                 sql,
                 new
                 {
-                    RequestIds = requestIds
+                    RequestIds = requestIds.Select(x => x.Value).ToArray()
                 },
                 cancellationToken: token,
                 commandTimeout: Postgres.DefaultTimeout

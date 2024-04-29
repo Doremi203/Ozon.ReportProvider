@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Ozon.ReportProvider.Domain.Interfaces.Repositories;
+using Ozon.ReportProvider.Domain.ValueTypes;
 using Ozon.ReportProvider.IntegrationTests.Fakers;
 using Ozon.ReportProvider.IntegrationTests.Fixtures;
 
@@ -15,7 +16,7 @@ public class ReportRepositoryTests(DalTestFixture fixture)
     {
         // Arrange
         var reports = ReportEntityV1Faker.Generate(5);
-        var ids = reports.Select(x => x.RequestId).ToArray();
+        var ids = reports.Select(x => new RequestId(x.RequestId)).ToArray();
 
         // Act
         await _reportRepository.Add(reports, CancellationToken.None);
@@ -30,7 +31,7 @@ public class ReportRepositoryTests(DalTestFixture fixture)
     {
         // Arrange
         var reports = ReportEntityV1Faker.Generate(5);
-        var ids = reports.Select(x => x.RequestId).ToArray();
+        var ids = reports.Select(x => new RequestId(x.RequestId)).ToArray();
         await _reportRepository.Add(reports, CancellationToken.None);
 
         // Act

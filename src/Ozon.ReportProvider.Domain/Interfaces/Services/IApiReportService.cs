@@ -4,5 +4,5 @@ namespace Ozon.ReportProvider.Domain.Interfaces.Services;
 
 public interface IApiReportService
 {
-    Task<Report[]> GetReports(GetReportModel[] models, CancellationToken token);
+    Task<Report[]> GetReports(ApiGetReportModel[] models, CancellationToken token);
 }

@@ -12,7 +12,7 @@ public class ReportRequestService(
 {
     public async Task ProcessReportRequests(ReportRequestEvent[] reportRequestEvents, CancellationToken token)
     {
-        var reports = await apiReportService.GetReports(reportRequestEvents.Adapt<GetReportModel[]>(), token);
+        var reports = await apiReportService.GetReports(reportRequestEvents.Adapt<ApiGetReportModel[]>(), token);
         
         await reportService.StoreReports(reports, token);
     }

@@ -28,12 +28,12 @@ public class ReportRequestServiceTests
         // Arrange
         var reportRequestEvents = new AutoFaker<ReportRequestEvent>()
             .Generate(3).ToArray();
-        var getReportModels = reportRequestEvents.Adapt<GetReportModel[]>();
+        var getReportModels = reportRequestEvents.Adapt<ApiGetReportModel[]>();
         var reports = new AutoFaker<Report>()
             .Generate(3).ToArray();
 
         _apiReportServiceFake
-            .Setup(x => x.GetReports(It.IsAny<GetReportModel[]>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.GetReports(It.IsAny<ApiGetReportModel[]>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(reports);
         _reportServiceFake
             .Setup(x => x.StoreReports(It.IsAny<Report[]>(), It.IsAny<CancellationToken>()))
@@ -44,7 +44,7 @@ public class ReportRequestServiceTests
 
         // Assert
         _apiReportServiceFake.Verify(x =>
-                x.GetReports(It.Is<GetReportModel[]>(m =>
+                x.GetReports(It.Is<ApiGetReportModel[]>(m =>
                         m.SequenceEqual(getReportModels)),
                     It.IsAny<CancellationToken>()),
             Times.Once);
