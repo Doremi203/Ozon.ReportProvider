@@ -5,7 +5,7 @@ using Ozon.ReportProvider.Dal.Extensions;
 
 namespace Ozon.ReportProvider.Api;
 
-public class Startup(IConfigurationRoot configuration)
+public class Startup(IConfiguration configuration)
 {
     public void ConfigureServices(IServiceCollection services)
     {

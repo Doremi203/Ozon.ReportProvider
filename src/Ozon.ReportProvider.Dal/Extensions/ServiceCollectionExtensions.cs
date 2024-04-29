@@ -12,7 +12,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddDal(
         this IServiceCollection services,
-        IConfigurationRoot configuration
+        IConfiguration configuration
     )
     {
         services.AddInfrastructure(configuration);
@@ -27,7 +27,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddPostgresRepositories(this IServiceCollection services)
     {
         services.AddTransient<IReportRepository, ReportRepository>();
-        
+
         return services;
     }
 
@@ -38,7 +38,7 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
-        IConfigurationRoot configuration
+        IConfiguration configuration
     )
     {
         services
@@ -50,7 +50,10 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    private static IServiceCollection AddPostgres(this IServiceCollection services, IConfigurationRoot configuration)
+    private static IServiceCollection AddPostgres(
+        this IServiceCollection services,
+        IConfiguration configuration
+    )
     {
         DefaultTypeMap.MatchNamesWithUnderscores = true;
 
@@ -60,10 +63,7 @@ public static class ServiceCollectionExtensions
 
         services.AddNpgsqlDataSource(
             dataBaseOptions.ConnectionString,
-            builder =>
-            {
-                builder.MapComposite<ReportEntityV1>("reports_v1", builder.DefaultNameTranslator);
-            });
+            builder => { builder.MapComposite<ReportEntityV1>("reports_v1", builder.DefaultNameTranslator); });
 
         return services;
     }
