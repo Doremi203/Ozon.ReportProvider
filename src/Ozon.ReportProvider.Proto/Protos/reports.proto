@@ -18,11 +18,11 @@ message GetReportsResponseV1 {
 }
 
 message RequestIdV1 {
-    uint64 value = 1;
+    int64 value = 1;
 }
 
 message ReportV1 {
     RequestIdV1 request_id = 1;
     google.type.Decimal conversion_ratio = 2;
-    uint64 sold_count = 3;
+    int64 sold_count = 3;
 }
