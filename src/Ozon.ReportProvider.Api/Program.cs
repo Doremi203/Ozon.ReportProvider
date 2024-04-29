@@ -1,4 +1,5 @@
 using Ozon.ReportProvider.Api.Config;
+using Ozon.ReportProvider.Api.Services;
 using Ozon.ReportProvider.Dal.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +15,13 @@ services.AddDal(configuration);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.MigrateDown();
+}
+
+app.MapGrpcService<ReportsGrpcService>();
+app.MapGrpcReflectionService();
 
 app.MigrateUp();
 
