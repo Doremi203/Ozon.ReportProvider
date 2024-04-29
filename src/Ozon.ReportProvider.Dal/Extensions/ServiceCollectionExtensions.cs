@@ -57,14 +57,15 @@ public static class ServiceCollectionExtensions
     {
         DefaultTypeMap.MatchNamesWithUnderscores = true;
 
-        var dataBaseOptions = configuration.GetSection(nameof(DatabaseOptions)).Get<DatabaseOptions>()
-                              ?? throw new ArgumentNullException(nameof(DatabaseOptions),
-                                  "Database options are not set");
+        var dataBaseOptions = configuration.GetSection(nameof(DatabaseOptions)).Get<DatabaseOptions>();
 
-        services.AddNpgsqlDataSource(
-            dataBaseOptions.ConnectionString,
-            builder => { builder.MapComposite<ReportEntityV1>("reports_v1", builder.DefaultNameTranslator); });
-
+        if (dataBaseOptions is not null)
+        {
+            services.AddNpgsqlDataSource(
+                dataBaseOptions.ConnectionString,
+                builder => { builder.MapComposite<ReportEntityV1>("reports_v1", builder.DefaultNameTranslator); });
+        }
+        
         return services;
     }
 }
