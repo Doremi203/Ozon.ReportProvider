@@ -1,9 +1,6 @@
 using Mapster;
-using Ozon.ReportProvider.Api.Contracts;
-using Ozon.ReportProvider.Domain.Entities;
-using Ozon.ReportProvider.Domain.Events;
-using Ozon.ReportProvider.Domain.Models;
 using Ozon.ReportProvider.Domain.ValueTypes;
+using Decimal = Google.Type.Decimal;
 
 namespace Ozon.ReportProvider.Api.Config;
 
@@ -11,15 +8,10 @@ public static class MapsterConfig
 {
     public static void Configure()
     {
-        /*TypeAdapterConfig<ReportRequestEventContract, ReportRequestEvent>.NewConfig()
-            .Map(dest => dest.RequestId.Value,
-                src => src.RequestId)
-            .Map(dest => dest.GoodId.Value,
-                src => src.GoodId);
-
-        TypeAdapterConfig<Report, ReportEntityV1>.NewConfig()
-            .Map(dest => dest.RequestId,
-                src => src.RequestId.Value);*/
+        TypeAdapterConfig<decimal, Decimal>.NewConfig()
+            .MapWith(src => Decimal.FromClrDecimal(src));
+        TypeAdapterConfig<Decimal, decimal>.NewConfig()
+            .MapWith(src => src.ToClrDecimal());
         
         TypeAdapterConfig<long, RequestId>.NewConfig()
             .Map(dest => dest.Value,
