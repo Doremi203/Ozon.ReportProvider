@@ -26,7 +26,7 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddPostgresRepositories(this IServiceCollection services)
     {
-        services.AddScoped<IReportRepository, ReportRepository>();
+        services.AddTransient<IReportRepository, ReportRepository>();
         
         return services;
     }
