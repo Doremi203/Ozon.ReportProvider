@@ -10,11 +10,11 @@ service ReportsService {
 }
 
 message GetReportsRequestV1 {
-    repeated RequestIdV1 request_id = 1;
+    repeated RequestIdV1 request_ids = 1;
 }
 
 message GetReportsResponseV1 {
-    repeated ReportV1 report = 1;
+    repeated ReportV1 reports = 1;
 }
 
 message RequestIdV1 {
