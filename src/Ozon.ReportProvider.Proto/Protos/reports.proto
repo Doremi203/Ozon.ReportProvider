@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option csharp_namespace = "Ozon.ReportProvider.Proto";
+package ozon.report_provider.proto.reports;
+
+import "google/type/decimal.proto";
+
+service ReportsService {
+    rpc GetReportsV1(GetReportsRequestV1) returns (GetReportsResponseV1);
+}
+
+message GetReportsRequestV1 {
+    repeated RequestIdV1 request_id = 1;
+}
+
+message GetReportsResponseV1 {
+    repeated ReportV1 report = 1;
+}
+
+message RequestIdV1 {
+    uint64 value = 1;
+}
+
+message ReportV1 {
+    RequestIdV1 request_id = 1;
+    google.type.Decimal conversion_ratio = 2;
+    uint64 sold_count = 3;
+}

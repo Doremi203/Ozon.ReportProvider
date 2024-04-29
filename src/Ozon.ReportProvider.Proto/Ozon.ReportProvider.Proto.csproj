@@ -1,5 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+    <PropertyGroup>
+        <IncludeGoogleApiCommonProtos>true</IncludeGoogleApiCommonProtos>
+    </PropertyGroup>
+    
     <ItemGroup>
         <Protobuf Include="Protos\**">
             <GrpcServices>Both</GrpcServices>
@@ -12,6 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Google.Api.CommonProtos" />
       <PackageReference Include="Google.Protobuf" />
       <PackageReference Include="Grpc.Net.Client" />
       <PackageReference Include="Grpc.Tools">
