@@ -12,7 +12,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddDal(
         this IServiceCollection services,
-        IConfigurationRoot configuration
+        IConfiguration configuration
     )
     {
         services.AddInfrastructure(configuration);
@@ -26,8 +26,8 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddPostgresRepositories(this IServiceCollection services)
     {
-        services.AddScoped<IReportRepository, ReportRepository>();
-        
+        services.AddTransient<IReportRepository, ReportRepository>();
+
         return services;
     }
 
@@ -38,7 +38,7 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
-        IConfigurationRoot configuration
+        IConfiguration configuration
     )
     {
         services
@@ -50,21 +50,22 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    private static IServiceCollection AddPostgres(this IServiceCollection services, IConfigurationRoot configuration)
+    private static IServiceCollection AddPostgres(
+        this IServiceCollection services,
+        IConfiguration configuration
+    )
     {
         DefaultTypeMap.MatchNamesWithUnderscores = true;
 
-        var dataBaseOptions = configuration.GetSection(nameof(DatabaseOptions)).Get<DatabaseOptions>()
-                              ?? throw new ArgumentNullException(nameof(DatabaseOptions),
-                                  "Database options are not set");
+        var dataBaseOptions = configuration.GetSection(nameof(DatabaseOptions)).Get<DatabaseOptions>();
 
-        services.AddNpgsqlDataSource(
-            dataBaseOptions.ConnectionString,
-            builder =>
-            {
-                builder.MapComposite<ReportEntityV1>("reports_v1", builder.DefaultNameTranslator);
-            });
-
+        if (dataBaseOptions is not null)
+        {
+            services.AddNpgsqlDataSource(
+                dataBaseOptions.ConnectionString,
+                builder => { builder.MapComposite<ReportEntityV1>("reports_v1", builder.DefaultNameTranslator); });
+        }
+        
         return services;
     }
 }

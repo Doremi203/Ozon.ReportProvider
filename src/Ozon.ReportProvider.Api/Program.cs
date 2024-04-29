@@ -1,21 +1,16 @@
-using Ozon.ReportProvider.Api.Config;
+using Ozon.ReportProvider.Api;
 using Ozon.ReportProvider.Dal.Extensions;
 
-var builder = WebApplication.CreateBuilder(args);
-var services = builder.Services;
-var configuration = builder.Configuration;
+var host = Host.CreateDefaultBuilder(args)
+    .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>())
+    .Build();
 
-// Add services to the container.
-services.AddGrpc();
-services.AddGrpcReflection();
+var env = host.Services.GetRequiredService<IWebHostEnvironment>();
+if (env.IsDevelopment())
+{
+    host.MigrateDown();
+}
 
-MapsterConfig.Configure();
-services.AddDal(configuration);
+host.MigrateUp();
 
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-
-app.MigrateUp();
-
-app.Run();
+host.Run();

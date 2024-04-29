@@ -35,8 +35,6 @@ public class DalTestFixture
 
     private static void ClearDatabase(IHost host)
     {
-        using var scope = host.Services.CreateScope();
-        var migrationRunner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
-        migrationRunner.MigrateDown(0);
+        host.MigrateDown();
     }
 }
