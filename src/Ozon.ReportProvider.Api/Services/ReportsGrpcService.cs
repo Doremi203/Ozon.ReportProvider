@@ -8,18 +8,18 @@ namespace Ozon.ReportProvider.Api.Services;
 
 public class ReportsGrpcService(
     IReportService reportService
-) : ReportsService.ReportsServiceBase
+) : ReportService.ReportServiceBase
 {
-    public override async Task<GetReportsResponseV1> GetReportsV1(
-        GetReportsRequestV1 request,
+    public override async Task<GetReportResponseV1> GetReportV1(
+        GetReportRequestV1 request,
         ServerCallContext context
     )
     {
-        var reports = await reportService.GetReports(request.RequestIds.Adapt<RequestId[]>(), default);
+        var report = await reportService.GetReport(request.RequestId.Adapt<RequestId>(), default);
 
-        return new GetReportsResponseV1
+        return new GetReportResponseV1
         {
-            Reports = { reports.Adapt<ReportV1[]>() }
+            Report = report.Adapt<ReportV1>()
         };
     }
 }
