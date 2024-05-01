@@ -34,13 +34,13 @@ public class ReportGrpcServiceTests : GrpcIntegrationTestBase
                 {
                     services.Replace(new ServiceDescriptor(typeof(IReportRepository),
                         _reportRepositoryFake.Object));
-                    services.Replace(new ServiceDescriptor(typeof(IDistributedCache),
-                        _distributedCacheFake.Object));
+                    //services.Replace(new ServiceDescriptor(typeof(IDistributedCache),
+                    //    _distributedCacheFake.Object));
                 });
             }
         );
     }
-    
+
     [Fact]
     public async Task GetReportV1_ReportReadyNotCached_ShouldReturnReportFromDataBase()
     {
@@ -58,7 +58,10 @@ public class ReportGrpcServiceTests : GrpcIntegrationTestBase
             Report = report.Adapt<Report>().Adapt<ReportV1>()
         };
         _reportRepositoryFake
-            .Setup(x => x.GetReport(It.IsAny<RequestId>(), It.IsAny<CancellationToken>()))
+            .Setup(x =>
+                x.GetReport(new RequestId(report.RequestId),
+                    It.IsAny<CancellationToken>())
+            )
             .ReturnsAsync(report);
 
         // Act
@@ -68,13 +71,12 @@ public class ReportGrpcServiceTests : GrpcIntegrationTestBase
         // Assert
         response.Should().BeEquivalentTo(expectedResponse);
     }
-    
+
     [Fact]
     public async Task GetReportV1_MultipleCalls_ShouldUseCacheAfterFirstCall()
     {
         // Arrange
         var report = ReportEntityV1Faker.Generate()[0];
-        var callsCount = 0;
         var request = new GetReportRequestV1
         {
             RequestId = new RequestIdV1
@@ -87,20 +89,11 @@ public class ReportGrpcServiceTests : GrpcIntegrationTestBase
             Report = report.Adapt<Report>().Adapt<ReportV1>()
         };
         _reportRepositoryFake
-            .Setup(x => x.GetReport(It.Is<RequestId>(r => r.Value == report.RequestId), It.IsAny<CancellationToken>()))
+            .Setup(x =>
+                x.GetReport(new RequestId(report.RequestId),
+                    It.IsAny<CancellationToken>())
+            )
             .ReturnsAsync(report);
-        _distributedCacheFake
-            .Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(() =>
-            {
-                if (callsCount == 0)
-                {
-                    callsCount++;
-                    return [];
-                }
-
-                return JsonSerializer.SerializeToUtf8Bytes(expectedResponse);
-            });
 
         // Act
         var client = new ReportService.ReportServiceClient(Channel);
@@ -110,7 +103,8 @@ public class ReportGrpcServiceTests : GrpcIntegrationTestBase
         // Assert
         response.Should().BeEquivalentTo(expectedResponse);
         response2.Should().BeEquivalentTo(expectedResponse);
-        
-        _reportRepositoryFake.Verify(x => x.GetReport(It.IsAny<RequestId>(), default), Times.Once);
+
+        _reportRepositoryFake.Verify(x => x.GetReport(It.IsAny<RequestId>(), It.IsAny<CancellationToken>()),
+            Times.Once);
     }
 }
