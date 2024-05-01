@@ -2,6 +2,7 @@ using Dapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Ozon.ReportProvider.Dal.Config;
+using Ozon.ReportProvider.Dal.DataBase;
 using Ozon.ReportProvider.Dal.Repositories;
 using Ozon.ReportProvider.Domain.Entities;
 using Ozon.ReportProvider.Domain.Interfaces.Repositories;
@@ -46,6 +47,7 @@ public static class ServiceCollectionExtensions
             .Configure<RedisOptions>(configuration.GetSection(nameof(RedisOptions)));
 
         services.AddMigrations();
+        services.AddSingleton<IDbConnectionProvider, NpgsqlConnectionProvider>();
 
         return services;
     }

@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Ozon.ReportProvider.Dal.Config;
 
-namespace Ozon.ReportProvider.Dal;
+namespace Ozon.ReportProvider.Dal.DataBase;
 
 public static class Postgres
 {
@@ -17,7 +17,7 @@ public static class Postgres
             new TransactionOptions
             {
                 IsolationLevel = isolationLevel,
-                Timeout = TimeSpan.FromMinutes(DefaultTimeout)
+                Timeout = TimeSpan.FromSeconds(DefaultTimeout)
             });
     }
 

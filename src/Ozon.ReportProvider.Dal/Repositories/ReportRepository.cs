@@ -1,5 +1,5 @@
 using Dapper;
-using Npgsql;
+using Ozon.ReportProvider.Dal.DataBase;
 using Ozon.ReportProvider.Domain.Entities;
 using Ozon.ReportProvider.Domain.Interfaces.Repositories;
 using Ozon.ReportProvider.Domain.ValueTypes;
@@ -7,7 +7,7 @@ using Ozon.ReportProvider.Domain.ValueTypes;
 namespace Ozon.ReportProvider.Dal.Repositories;
 
 public class ReportRepository(
-    NpgsqlDataSource dataSource
+    IDbConnectionProvider connectionProvider
 ) : IReportRepository
 {
     public async Task Add(ReportEntityV1[] reports, CancellationToken token)
@@ -18,7 +18,7 @@ select request_id, conversion_ratio, sold_count
 from unnest(@Reports)
 on conflict do nothing
 ";
-        await using var connection = await dataSource.OpenConnectionAsync(token);
+        await using var connection = await connectionProvider.OpenConnectionAsync(token);
 
         await connection.ExecuteAsync(
             new CommandDefinition(
@@ -42,7 +42,7 @@ select request_id
 from reports
 where request_id = @RequestId
 ";
-        await using var connection = await dataSource.OpenConnectionAsync(token);
+        await using var connection = await connectionProvider.OpenConnectionAsync(token);
 
         return await connection.QueryFirstOrDefaultAsync<ReportEntityV1>(
             new CommandDefinition(
@@ -66,7 +66,7 @@ select request_id
 from reports
 where request_id = any(@RequestIds)
 ";
-        await using var connection = await dataSource.OpenConnectionAsync(token);
+        await using var connection = await connectionProvider.OpenConnectionAsync(token);
 
         return (await connection.QueryAsync<ReportEntityV1>(
             new CommandDefinition(
@@ -88,7 +88,7 @@ select request_id
 from reports
 where request_id = any(@RequestIds)
 ";
-        await using var connection = await dataSource.OpenConnectionAsync(token);
+        await using var connection = await connectionProvider.OpenConnectionAsync(token);
 
         var ids = await connection.QueryAsync<long>(
             new CommandDefinition(
