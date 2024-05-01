@@ -107,7 +107,6 @@ public class ReportRequestServiceTests
         var reportRequestEvents = new AutoFaker<ReportRequestEvent>()
             .Generate(3).ToArray();
         var uncompleteRequests = Array.Empty<ReportRequestEvent>();
-        var getReportModels = uncompleteRequests.Adapt<ApiGetReportModel[]>();
         
         _reportServiceFake
             .Setup(x => x.GetUncompleteReportRequests(It.IsAny<ReportRequestEvent[]>(), It.IsAny<CancellationToken>()))

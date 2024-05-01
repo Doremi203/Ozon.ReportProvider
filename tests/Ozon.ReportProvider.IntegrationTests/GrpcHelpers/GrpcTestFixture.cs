@@ -37,27 +37,24 @@ public class GrpcTestFixture<TStartup> : IDisposable where TStartup : class
 
     private void EnsureServer()
     {
-        if (_host == null)
-        {
-            var builder = new HostBuilder()
-                .ConfigureServices(services => { services.AddSingleton<ILoggerFactory>(LoggerFactory); })
-                .ConfigureWebHostDefaults(webHost =>
-                {
-                    webHost
-                        .UseTestServer()
-                        .UseStartup<TStartup>()
-                        .ConfigureAppConfiguration(configurationBuilder =>
-                            configurationBuilder
-                                .SetBasePath(Directory.GetCurrentDirectory())
-                                .AddJsonFile("appsettings.json")
-                        );
+        var builder = new HostBuilder()
+            .ConfigureServices(services => { services.AddSingleton<ILoggerFactory>(LoggerFactory); })
+            .ConfigureWebHostDefaults(webHost =>
+            {
+                webHost
+                    .UseTestServer()
+                    .UseStartup<TStartup>()
+                    .ConfigureAppConfiguration(configurationBuilder =>
+                        configurationBuilder
+                            .SetBasePath(Directory.GetCurrentDirectory())
+                            .AddJsonFile("appsettings.json")
+                    );
 
-                    _configureWebHost?.Invoke(webHost);
-                });
-            _host = builder.Start();
-            _server = _host.GetTestServer();
-            _handler = _server.CreateHandler();
-        }
+                _configureWebHost?.Invoke(webHost);
+            });
+        _host = builder.Start();
+        _server = _host.GetTestServer();
+        _handler = _server.CreateHandler();
     }
 
     public LoggerFactory LoggerFactory { get; }
