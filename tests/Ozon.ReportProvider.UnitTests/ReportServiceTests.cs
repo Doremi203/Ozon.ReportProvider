@@ -7,6 +7,7 @@ using Moq;
 using Ozon.ReportProvider.Bll.Services;
 using Ozon.ReportProvider.Domain.Entities;
 using Ozon.ReportProvider.Domain.Events;
+using Ozon.ReportProvider.Domain.Exceptions;
 using Ozon.ReportProvider.Domain.Interfaces.Repositories;
 using Ozon.ReportProvider.Domain.Interfaces.Services;
 using Ozon.ReportProvider.Domain.Models;
@@ -147,6 +148,28 @@ public class ReportServiceTests
                     It.IsAny<DistributedCacheEntryOptions>(),
                     It.IsAny<CancellationToken>()),
             Times.Once);
+    }
+    
+    [Fact]
+    public async Task GetReport_NoReport_ShouldThrowReportNotReadyException()
+    {
+        // Arrange
+        var reportEntity = new AutoFaker<ReportEntityV1>()
+            .Generate();
+        var requestId = new RequestId(reportEntity.RequestId);
+
+        _reportRepositoryFake
+            .Setup(x => x.GetReport(It.IsAny<RequestId>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((ReportEntityV1)null!);
+        _distributedCacheFake
+            .Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((byte[])null!);
+
+        // Act
+        Func<Task> act = async () => await _reportService.GetReport(requestId, CancellationToken.None);
+
+        // Assert
+        await act.Should().ThrowAsync<ReportNotReadyException>();
     }
 
     [Fact]
