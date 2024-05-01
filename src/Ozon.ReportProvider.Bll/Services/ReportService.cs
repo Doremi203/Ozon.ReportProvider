@@ -2,6 +2,7 @@ using System.Text.Json;
 using Mapster;
 using Microsoft.Extensions.Caching.Distributed;
 using Ozon.ReportProvider.Domain.Entities;
+using Ozon.ReportProvider.Domain.Events;
 using Ozon.ReportProvider.Domain.Exceptions;
 using Ozon.ReportProvider.Domain.Interfaces.Repositories;
 using Ozon.ReportProvider.Domain.Interfaces.Services;
@@ -39,6 +40,14 @@ public class ReportService(
         return report;
     }
 
+    public async Task<ReportRequestEvent[]> GetUncompleteReportRequests(ReportRequestEvent[] requests, CancellationToken token)
+    {
+        var requestIds = requests.Select(r => r.RequestId).ToArray();
+        var completedRequestIds = await reportRepository.GetCompletedRequestIds(requestIds, token);
+
+        return requests.Where(r => !completedRequestIds.Contains(r.RequestId)).ToArray();
+    }
+
     private Task CacheReport(string cacheKey, Report? report, CancellationToken token)
     {
         return distributedCache.SetStringAsync(
@@ -50,12 +59,5 @@ public class ReportService(
             },
             token
         );
-    }
-
-    public async Task<Report[]> GetReports(RequestId[] requestIds, CancellationToken token)
-    {
-        var reportEntities = await reportRepository.GetReports(requestIds, token);
-
-        return reportEntities.Adapt<Report[]>();
     }
 }

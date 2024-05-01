@@ -16,6 +16,7 @@ public class ReportRepository(
 insert into reports (request_id, conversion_ratio, sold_count)
 select request_id, conversion_ratio, sold_count
 from unnest(@Reports)
+on conflict do nothing
 ";
         await using var connection = await dataSource.OpenConnectionAsync(token);
 
@@ -78,5 +79,29 @@ where request_id = any(@RequestIds)
                 commandTimeout: Postgres.DefaultTimeout
             )
         )).ToArray();
+    }
+
+    public async Task<RequestId[]> GetCompletedRequestIds(RequestId[] requestIds, CancellationToken token)
+    {
+        const string sql = @"
+select request_id
+from reports
+where request_id = any(@RequestIds)
+";
+        await using var connection = await dataSource.OpenConnectionAsync(token);
+
+        var ids = await connection.QueryAsync<long>(
+            new CommandDefinition(
+                sql,
+                new
+                {
+                    RequestIds = requestIds.Select(x => x.Value).ToArray()
+                },
+                cancellationToken: token,
+                commandTimeout: Postgres.DefaultTimeout
+            )
+        );
+
+        return ids.Select(v => new RequestId(v)).ToArray();
     }
 }

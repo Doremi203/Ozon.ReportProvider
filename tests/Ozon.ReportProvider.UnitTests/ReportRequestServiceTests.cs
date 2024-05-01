@@ -38,6 +38,9 @@ public class ReportRequestServiceTests
         _reportServiceFake
             .Setup(x => x.StoreReports(It.IsAny<Report[]>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
+        _reportServiceFake
+            .Setup(x => x.GetUncompleteReportRequests(It.IsAny<ReportRequestEvent[]>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(reportRequestEvents);
 
         // Act
         await _reportRequestService.ProcessReportRequests(reportRequestEvents, CancellationToken.None);

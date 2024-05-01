@@ -1,3 +1,4 @@
+using Ozon.ReportProvider.Domain.Events;
 using Ozon.ReportProvider.Domain.Models;
 using Ozon.ReportProvider.Domain.ValueTypes;
 
@@ -7,5 +8,5 @@ public interface IReportService
 {
     Task StoreReports(Report[] reports, CancellationToken token);
     Task<Report> GetReport(RequestId requestId, CancellationToken token);
-    Task<Report[]> GetReports(RequestId[] requestIds, CancellationToken token);
+    Task<ReportRequestEvent[]> GetUncompleteReportRequests(ReportRequestEvent[] requests, CancellationToken token);
 }  
