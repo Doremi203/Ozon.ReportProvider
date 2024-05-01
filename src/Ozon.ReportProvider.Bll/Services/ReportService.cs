@@ -22,7 +22,7 @@ public class ReportService(
 
     public async Task<Report> GetReport(RequestId requestId, CancellationToken token)
     {
-        var cacheKey = $"report:{requestId.Value}";
+        var cacheKey = $"reports:{requestId.Value}";
         var cachedReport = await distributedCache.GetStringAsync(cacheKey, token);
         Report? report;
         if (!string.IsNullOrEmpty(cachedReport))
