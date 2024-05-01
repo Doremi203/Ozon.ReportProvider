@@ -14,8 +14,7 @@ public static class MapsterConfig
             .MapWith(src => src.ToClrDecimal());
         
         TypeAdapterConfig<long, RequestId>.NewConfig()
-            .Map(dest => dest.Value,
-                src => src);
+            .MapWith(src => new RequestId(src));
         TypeAdapterConfig<RequestId, long>.NewConfig()
             .Map(dest => dest,
                 src => src.Value);

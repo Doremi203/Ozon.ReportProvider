@@ -1,14 +1,18 @@
+using Microsoft.Extensions.Logging;
 using Ozon.ReportProvider.Domain.Interfaces.Services;
 using Ozon.ReportProvider.Domain.Models;
 
 namespace Ozon.ReportProvider.Bll.Services;
 
-public class ApiReportServiceFake : IApiReportService
+public class ApiReportServiceFake(
+    ILogger<ApiReportServiceFake> logger
+    ) : IApiReportService
 {
     private const int FakeDelay = 1500;
     
     public async Task<Report[]> GetReports(ApiGetReportModel[] models, CancellationToken token)
     {
+        logger.LogInformation($"Api was called with batch size:{models.Length}");
         await Task.Delay(FakeDelay, token);
         
         return models.Select(x => new Report

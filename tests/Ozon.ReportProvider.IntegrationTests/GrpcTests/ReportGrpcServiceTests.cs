@@ -1,9 +1,12 @@
 using FluentAssertions;
+using Grpc.Core;
 using Mapster;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
 using Ozon.ReportProvider.Api;
+using Ozon.ReportProvider.Api.Config;
+using Ozon.ReportProvider.Domain.Entities;
 using Ozon.ReportProvider.Domain.Interfaces.Repositories;
 using Ozon.ReportProvider.Domain.Models;
 using Ozon.ReportProvider.Domain.ValueTypes;
@@ -23,6 +26,7 @@ public class ReportGrpcServiceTests : GrpcIntegrationTestBase
         ITestOutputHelper outputHelper
     ) : base(fixture, outputHelper)
     {
+        MapsterConfig.Configure();
         fixture.ConfigureWebHost(builder =>
             {
                 builder.ConfigureServices(services =>
@@ -33,33 +37,107 @@ public class ReportGrpcServiceTests : GrpcIntegrationTestBase
             }
         );
     }
-    
+
     [Fact]
-    public async Task GetReportsV1_ValidRequest_ShouldReturnGetReportsResponseV1()
+    public async Task GetReportV1_ReportReadyNotCached_ShouldReturnReportFromDataBase()
     {
         // Arrange
-        var reports = ReportEntityV1Faker.Generate();
-        var requests = new GetReportsRequestV1
+        var report = ReportEntityV1Faker.Generate()[0];
+        var request = new GetReportRequestV1
         {
-            RequestIds = { reports.Select(x => new RequestIdV1
+            RequestId = new RequestIdV1
             {
-                Value = x.RequestId
-            })}
+                Value = report.RequestId
+            }
+        };
+        var expectedResponse = new GetReportResponseV1
+        {
+            Report = report.Adapt<Report>().Adapt<ReportV1>()
         };
         _reportRepositoryFake
-            .Setup(x => x.GetReports(It.IsAny<RequestId[]>(), default))
-            .ReturnsAsync(reports);
-        
-        var expectedResponse = new GetReportsResponseV1
-        {
-            Reports = { reports.Adapt<Report[]>().Adapt<ReportV1[]>() }
-        };
+            .Setup(x =>
+                x.GetReport(new RequestId(report.RequestId),
+                    It.IsAny<CancellationToken>())
+            )
+            .ReturnsAsync(report);
 
         // Act
-        var client = new ReportsService.ReportsServiceClient(Channel);
-        var response = await client.GetReportsV1Async(requests);
+        var client = new ReportService.ReportServiceClient(Channel);
+        var response = await client.GetReportV1Async(request);
 
         // Assert
         response.Should().BeEquivalentTo(expectedResponse);
+    }
+
+    [Fact]
+    public async Task GetReportV1_MultipleCalls_ShouldUseCacheAfterFirstCall()
+    {
+        // Arrange
+        var report = ReportEntityV1Faker.Generate()[0];
+        var request = new GetReportRequestV1
+        {
+            RequestId = new RequestIdV1
+            {
+                Value = report.RequestId
+            }
+        };
+        var expectedResponse = new GetReportResponseV1
+        {
+            Report = report.Adapt<Report>().Adapt<ReportV1>()
+        };
+        _reportRepositoryFake
+            .Setup(x =>
+                x.GetReport(new RequestId(report.RequestId),
+                    It.IsAny<CancellationToken>())
+            )
+            .ReturnsAsync(report);
+
+        // Act
+        var client = new ReportService.ReportServiceClient(Channel);
+        var response = await client.GetReportV1Async(request);
+        var response2 = await client.GetReportV1Async(request);
+
+        // Assert
+        response.Should().BeEquivalentTo(expectedResponse);
+        response2.Should().BeEquivalentTo(expectedResponse);
+
+        _reportRepositoryFake.Verify(x => x.GetReport(It.IsAny<RequestId>(), It.IsAny<CancellationToken>()),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task GetReportV1_ReportNotReady_ShouldThrowRpcExceptionUnavailable()
+    {
+        // Arrange
+        var report = ReportEntityV1Faker.Generate()[0];
+        var request = new GetReportRequestV1
+        {
+            RequestId = new RequestIdV1
+            {
+                Value = report.RequestId
+            }
+        };
+        _reportRepositoryFake
+            .Setup(x =>
+                x.GetReport(new RequestId(report.RequestId),
+                    It.IsAny<CancellationToken>())
+            )
+            .ReturnsAsync((ReportEntityV1)null!);
+        var expectedStatus = StatusCode.Unavailable;
+        var errorEncountered = false;
+
+        // Act
+        var client = new ReportService.ReportServiceClient(Channel);
+        try
+        {
+            await client.GetReportV1Async(request);
+        }
+        catch (RpcException e) when (e.StatusCode == expectedStatus)
+        {
+            errorEncountered = true;
+        }
+        
+        // Assert
+        errorEncountered.Should().BeTrue();
     }
 }

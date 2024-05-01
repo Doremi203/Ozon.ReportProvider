@@ -7,14 +7,13 @@ namespace Ozon.ReportProvider.IntegrationTests.GrpcHelpers;
 
 public class GrpcIntegrationTestBase : IClassFixture<GrpcTestFixture<Startup>>, IDisposable
 {
-    private GrpcChannel? _channel;
     private IDisposable? _testContext;
 
     protected GrpcTestFixture<Startup> Fixture { get; set; }
 
     protected ILoggerFactory LoggerFactory => Fixture.LoggerFactory;
 
-    protected GrpcChannel Channel => _channel ??= CreateChannel();
+    protected GrpcChannel Channel => CreateChannel();
 
     protected GrpcChannel CreateChannel()
     {
@@ -34,6 +33,5 @@ public class GrpcIntegrationTestBase : IClassFixture<GrpcTestFixture<Startup>>, 
     public void Dispose()
     {
         _testContext?.Dispose();
-        _channel = null;
     }
 }
