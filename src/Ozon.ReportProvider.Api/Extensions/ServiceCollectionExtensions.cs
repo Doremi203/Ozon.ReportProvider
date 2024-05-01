@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Confluent.Kafka;
 using Ozon.ReportProvider.Api.Kafka;
 using Ozon.ReportProvider.Kafka;
@@ -10,8 +11,8 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services
     ) where THandler : IHandler<TKey, TValue>
     {
-        services.AddSingleton<IDeserializer<TKey>, SystemTextJsonDeserializer<TKey>>();
-        services.AddSingleton<IDeserializer<TValue>, SystemTextJsonDeserializer<TValue>>();
+        services.AddSingleton<IDeserializer<TKey>, SystemTextJsonDeserializer<TKey>>(_ => new SystemTextJsonDeserializer<TKey>(new JsonSerializerOptions()));
+        services.AddSingleton<IDeserializer<TValue>, SystemTextJsonDeserializer<TValue>>(_ => new SystemTextJsonDeserializer<TValue>(new JsonSerializerOptions()));
         services.AddHostedService<KafkaBackgroundService<TKey, TValue, THandler>>();
 
         return services;

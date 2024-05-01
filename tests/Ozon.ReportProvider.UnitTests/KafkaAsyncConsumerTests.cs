@@ -14,17 +14,17 @@ public class KafkaAsyncConsumerTests
     private readonly Mock<IConsumer<Ignore, int>> _consumerFake = new();
     private readonly Mock<IHandler<Ignore, int>> _handlerFake = new();
     private readonly Mock<ILogger<KafkaAsyncConsumer<Ignore, int>>> _loggerFake = new();
-    private readonly Mock<IOptions<KafkaSettings>> _optionsFake = new();
+    private readonly Mock<IOptions<KafkaOptions>> _optionsFake = new();
     private readonly KafkaAsyncConsumer<Ignore, int> _kafkaAsyncConsumer;
 
     public KafkaAsyncConsumerTests()
     {
-        _optionsFake.Setup(x => x.Value).Returns(new KafkaSettings
+        _optionsFake.Setup(x => x.Value).Returns(new KafkaOptions
         {
             BootstrapServers = "test-server",
             GroupId = "test-group",
-            ChannelCapacity = 10,
-            BufferDelay = 1,
+            BatchMaxSize = 10,
+            BatchDelay = 1,
             Topic = "test-topic"
         });
 

@@ -1,4 +1,4 @@
-namespace Ozon.ReportProvider.Api.Contracts;
+namespace Ozon.ReportProvider.Api.Kafka.Contracts;
 
 public record ReportRequestEventContract
 {

@@ -3,7 +3,7 @@ using Confluent.Kafka;
 
 namespace Ozon.ReportProvider.Kafka;
 
-public class SystemTextJsonDeserializer<T>(JsonSerializerOptions? options) : IDeserializer<T>
+public class SystemTextJsonDeserializer<T>(JsonSerializerOptions options) : IDeserializer<T>
 {
     
     public T Deserialize(ReadOnlySpan<byte> data, bool isNull, SerializationContext context)

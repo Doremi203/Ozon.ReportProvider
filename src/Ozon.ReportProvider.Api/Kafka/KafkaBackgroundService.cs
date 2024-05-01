@@ -12,10 +12,10 @@ public class KafkaBackgroundService<TKey, TValue, THandler> : BackgroundService 
 
     private readonly ILogger<KafkaBackgroundService<TKey, TValue, THandler>> _logger;
 
-    public KafkaBackgroundService(IOptions<KafkaSettings> options,
+    public KafkaBackgroundService(IOptions<KafkaOptions> options,
         IServiceProvider serviceProvider,
         ILogger<KafkaBackgroundService<TKey, TValue, THandler>> logger,
-        IHandler<TKey, TValue> handler,
+        THandler handler,
         IDeserializer<TKey>? keyDeserializer,
         IDeserializer<TValue>? valueDeserializer)
     {

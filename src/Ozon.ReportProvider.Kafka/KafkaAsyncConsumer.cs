@@ -20,7 +20,7 @@ public sealed class KafkaAsyncConsumer<TKey, TValue> : IDisposable
     private readonly TimeSpan _bufferDelay;
 
     public KafkaAsyncConsumer(
-        IOptions<KafkaSettings> options,
+        IOptions<KafkaOptions> options,
         ILogger<KafkaAsyncConsumer<TKey, TValue>> logger,
         IHandler<TKey, TValue> handler,
         IConsumer<TKey, TValue> consumer,
@@ -30,8 +30,8 @@ public sealed class KafkaAsyncConsumer<TKey, TValue> : IDisposable
         _handler = handler;
         _logger = logger;
         _consumer = consumer;
-        _channelCapacity = options.Value.ChannelCapacity;
-        _bufferDelay = TimeSpan.FromSeconds(options.Value.BufferDelay);
+        _channelCapacity = options.Value.BatchMaxSize;
+        _bufferDelay = TimeSpan.FromSeconds(options.Value.BatchDelay);
         _policy = policy;
 
         _channel = Channel.CreateBounded<ConsumeResult<TKey, TValue>>(

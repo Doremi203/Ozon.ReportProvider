@@ -1,6 +1,6 @@
 using Confluent.Kafka;
 using Mapster;
-using Ozon.ReportProvider.Api.Contracts;
+using Ozon.ReportProvider.Api.Kafka.Contracts;
 using Ozon.ReportProvider.Domain.Events;
 using Ozon.ReportProvider.Domain.Interfaces.Services;
 using Ozon.ReportProvider.Kafka;
