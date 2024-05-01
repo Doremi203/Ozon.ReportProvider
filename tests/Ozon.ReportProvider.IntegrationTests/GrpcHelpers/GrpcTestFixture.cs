@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Ozon.ReportProvider.Api.Config;
 using Xunit.Abstractions;
 
 namespace Ozon.ReportProvider.IntegrationTests.GrpcHelpers;
@@ -43,7 +45,12 @@ public class GrpcTestFixture<TStartup> : IDisposable where TStartup : class
                 {
                     webHost
                         .UseTestServer()
-                        .UseStartup<TStartup>();
+                        .UseStartup<TStartup>()
+                        .ConfigureAppConfiguration(configurationBuilder =>
+                            configurationBuilder
+                                .SetBasePath(Directory.GetCurrentDirectory())
+                                .AddJsonFile("appsettings.json")
+                        );
 
                     _configureWebHost?.Invoke(webHost);
                 });
