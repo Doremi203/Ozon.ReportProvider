@@ -3,6 +3,7 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="FluentValidation.AspNetCore" />
     <PackageReference Include="Grpc.AspNetCore" />
     <PackageReference Include="Grpc.AspNetCore.Server.Reflection" />
   </ItemGroup>

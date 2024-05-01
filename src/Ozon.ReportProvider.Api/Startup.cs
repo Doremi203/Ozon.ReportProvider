@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Confluent.Kafka;
 using Ozon.ReportProvider.Api.Extensions;
+using Ozon.ReportProvider.Api.Interceptors;
 using Ozon.ReportProvider.Api.Kafka.Contracts;
 using Ozon.ReportProvider.Api.Kafka.Handlers;
 using Ozon.ReportProvider.Api.Services;
@@ -21,7 +22,10 @@ public class Startup(IConfiguration configuration)
         services.AddKafkaBackgroundService<Null, ReportRequestEventContract, ReportRequestHandler>(
             Deserializers.Null, new SystemTextJsonDeserializer<ReportRequestEventContract>(new JsonSerializerOptions()));
         
-        services.AddGrpc();
+        services.AddGrpc(options =>
+        {
+            options.Interceptors.Add<ValidationInterceptor>();
+        });
         services.AddGrpcReflection();
         
         Config.MapsterConfig.ConfigureApiMapping();
