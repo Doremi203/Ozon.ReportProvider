@@ -1,5 +1,6 @@
 using Grpc.Core;
 using Mapster;
+using Ozon.ReportProvider.Domain.Exceptions;
 using Ozon.ReportProvider.Domain.Interfaces.Services;
 using Ozon.ReportProvider.Domain.ValueTypes;
 using Ozon.ReportProvider.Proto;
@@ -15,11 +16,17 @@ public class ReportsGrpcService(
         ServerCallContext context
     )
     {
-        var report = await reportService.GetReport(request.RequestId.Adapt<RequestId>(), default);
-
-        return new GetReportResponseV1
+        try
         {
-            Report = report.Adapt<ReportV1>()
-        };
+            var report = await reportService.GetReport(request.RequestId.Adapt<RequestId>(), context.CancellationToken);
+            return new GetReportResponseV1
+            {
+                Report = report.Adapt<ReportV1>()
+            };
+        }
+        catch (ReportNotReadyException e)
+        {
+            throw new RpcException(new Status(StatusCode.Unavailable, e.Message));
+        }
     }
 }
