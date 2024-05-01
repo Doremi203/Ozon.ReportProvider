@@ -16,7 +16,7 @@ public class ReportRepository(
 insert into reports (request_id, conversion_ratio, sold_count)
 select request_id, conversion_ratio, sold_count
 from unnest(@Reports)
-on conflict do nothing
+on conflict(request_id) do nothing
 ";
         await using var connection = await connectionProvider.OpenConnectionAsync(token);
 

@@ -10,9 +10,9 @@ namespace Ozon.ReportProvider.Api.Kafka.Handlers;
 public class ReportRequestHandler(
     ILogger<ReportRequestHandler> logger,
     IReportRequestService reportRequestService
-    ) : IHandler<Ignore, ReportRequestEventContract>
+    ) : IHandler<Null, ReportRequestEventContract>
 {
-    public async Task Handle(IReadOnlyList<ConsumeResult<Ignore, ReportRequestEventContract>> messages, CancellationToken cancellationToken)
+    public async Task Handle(IReadOnlyList<ConsumeResult<Null, ReportRequestEventContract>> messages, CancellationToken cancellationToken)
     {
         try
         {

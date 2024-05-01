@@ -12,7 +12,6 @@ using Ozon.ReportProvider.Domain.Interfaces.Repositories;
 using Ozon.ReportProvider.Domain.Interfaces.Services;
 using Ozon.ReportProvider.Domain.Models;
 using Ozon.ReportProvider.Domain.ValueTypes;
-using Ozon.ReportProvider.UnitTests.Config;
 
 namespace Ozon.ReportProvider.UnitTests;
 
@@ -27,7 +26,7 @@ public class ReportServiceTests
         _reportRepositoryFake = new(MockBehavior.Strict);
         _distributedCacheFake = new();
         _reportService = new ReportService(_reportRepositoryFake.Object, _distributedCacheFake.Object);
-        MapsterConfig.Configure();
+        Bll.Config.MapsterConfig.ConfigureDomainMapping();
     }
 
     [Fact]
@@ -37,6 +36,7 @@ public class ReportServiceTests
         var reports = new AutoFaker<Report>()
             .Generate(3).ToArray();
         var reportEntities = reports.Adapt<ReportEntityV1[]>();
+        var id = reports[0].RequestId.Adapt<long>();
 
         _reportRepositoryFake
             .Setup(x => x.Add(It.IsAny<ReportEntityV1[]>(), It.IsAny<CancellationToken>()))

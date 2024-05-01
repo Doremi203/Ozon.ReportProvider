@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
 using Ozon.ReportProvider.Api;
-using Ozon.ReportProvider.Api.Config;
 using Ozon.ReportProvider.Domain.Entities;
 using Ozon.ReportProvider.Domain.Interfaces.Repositories;
 using Ozon.ReportProvider.Domain.Models;
@@ -26,7 +25,8 @@ public class ReportGrpcServiceTests : GrpcIntegrationTestBase
         ITestOutputHelper outputHelper
     ) : base(fixture, outputHelper)
     {
-        MapsterConfig.Configure();
+        Api.Config.MapsterConfig.ConfigureApiMapping();
+        Bll.Config.MapsterConfig.ConfigureDomainMapping();
         fixture.ConfigureWebHost(builder =>
             {
                 builder.ConfigureServices(services =>
