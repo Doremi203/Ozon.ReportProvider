@@ -6,6 +6,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Moq;
 using Ozon.ReportProvider.Bll.Services;
 using Ozon.ReportProvider.Domain.Entities;
+using Ozon.ReportProvider.Domain.Events;
 using Ozon.ReportProvider.Domain.Interfaces.Repositories;
 using Ozon.ReportProvider.Domain.Interfaces.Services;
 using Ozon.ReportProvider.Domain.Models;
@@ -146,5 +147,23 @@ public class ReportServiceTests
                     It.IsAny<DistributedCacheEntryOptions>(),
                     It.IsAny<CancellationToken>()),
             Times.Once);
+    }
+
+    [Fact]
+    public async Task GetUncompleteReportRequests_Success()
+    {
+        // Arrange
+        var requests = new AutoFaker<ReportRequestEvent>().Generate(5).ToArray();
+        var ids = requests.Select(r => r.RequestId).ToArray();
+        var expected = requests.Skip(2).ToArray();
+        _reportRepositoryFake
+            .Setup(x => x.GetCompletedRequestIds(It.IsAny<RequestId[]>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(ids.Take(2).ToArray);
+        
+        // Act
+        var actual = await _reportService.GetUncompleteReportRequests(requests, CancellationToken.None);
+        
+        // Assert
+        actual.Should().BeEquivalentTo(expected);
     }
 }
