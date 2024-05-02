@@ -7,6 +7,7 @@ EXPOSE 8081
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+COPY ["Directory.Build.props", "."]
 COPY ["src/Ozon.ReportProvider.Api/Ozon.ReportProvider.Api.csproj", "src/Ozon.ReportProvider.Api/"]
 COPY ["src/Ozon.ReportProvider.Bll/Ozon.ReportProvider.Bll.csproj", "src/Ozon.ReportProvider.Bll/"]
 COPY ["src/Ozon.ReportProvider.Domain/Ozon.ReportProvider.Domain.csproj", "src/Ozon.ReportProvider.Domain/"]
@@ -14,6 +15,7 @@ COPY ["src/Ozon.ReportProvider.Utils/Ozon.ReportProvider.Utils.csproj", "src/Ozo
 COPY ["src/Ozon.ReportProvider.Dal/Ozon.ReportProvider.Dal.csproj", "src/Ozon.ReportProvider.Dal/"]
 COPY ["src/Ozon.ReportProvider.Kafka/Ozon.ReportProvider.Kafka.csproj", "src/Ozon.ReportProvider.Kafka/"]
 COPY ["src/Ozon.ReportProvider.Proto/Ozon.ReportProvider.Proto.csproj", "src/Ozon.ReportProvider.Proto/"]
+COPY ["Directory.Packages.props", "."]
 RUN dotnet restore "src/Ozon.ReportProvider.Api/Ozon.ReportProvider.Api.csproj"
 COPY . .
 WORKDIR "/src/src/Ozon.ReportProvider.Api"
