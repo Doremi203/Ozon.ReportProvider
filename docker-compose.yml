@@ -1,4 +1,14 @@
 services:
+  report-provider:
+    image: doreml/ozon-report-provider
+    restart: always
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    depends_on:
+      database:
+        condition: service_healthy
   database:
     image: postgres
     restart: always

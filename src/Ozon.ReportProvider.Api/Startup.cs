@@ -25,7 +25,11 @@ public class Startup(IConfiguration configuration)
             Deserializers.Null,
             new SystemTextJsonDeserializer<ReportRequestEventContract>(new JsonSerializerOptions()));
 
-        services.AddGrpc(options => { options.Interceptors.Add<ValidationInterceptor>(); });
+        services.AddGrpc(options =>
+        {
+            options.Interceptors.Add<ValidationInterceptor>();
+            options.Interceptors.Add<ExceptionHandlerInterceptor>();
+        });
         services.AddGrpcReflection();
         services.AddValidatorsFromAssemblyContaining<Startup>();
 
