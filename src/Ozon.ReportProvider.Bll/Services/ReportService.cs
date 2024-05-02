@@ -27,7 +27,9 @@ public class ReportService(
         var cachedReport = await distributedCache.GetStringAsync(cacheKey, token);
         Report? report;
         if (!string.IsNullOrEmpty(cachedReport))
+        {
             report = JsonSerializer.Deserialize<Report?>(cachedReport);
+        }
         else
         {
             report = (await reportRepository.GetReport(requestId, token)).Adapt<Report?>();
@@ -40,7 +42,8 @@ public class ReportService(
         return report;
     }
 
-    public async Task<ReportRequestEvent[]> GetUncompleteReportRequests(ReportRequestEvent[] requests, CancellationToken token)
+    public async Task<ReportRequestEvent[]> GetUncompleteReportRequests(ReportRequestEvent[] requests,
+        CancellationToken token)
     {
         var requestIds = requests.Select(r => r.RequestId).ToArray();
         var completedRequestIds = await reportRepository.GetCompletedRequestIds(requestIds, token);

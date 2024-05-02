@@ -9,4 +9,4 @@ public interface IReportService
     Task StoreReports(Report[] reports, CancellationToken token);
     Task<Report> GetReport(RequestId requestId, CancellationToken token);
     Task<ReportRequestEvent[]> GetUncompleteReportRequests(ReportRequestEvent[] requests, CancellationToken token);
-}  
+}

@@ -5,7 +5,7 @@ namespace Ozon.ReportProvider.Dal.DataBase;
 
 public class NpgsqlConnectionProvider(
     NpgsqlDataSource dataSource
-    ) : IDbConnectionProvider
+) : IDbConnectionProvider
 {
     public async Task<DbConnection> OpenConnectionAsync(CancellationToken token)
     {

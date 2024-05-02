@@ -20,7 +20,7 @@ public class KafkaBackgroundService<TKey, TValue, THandler> : BackgroundService 
         IDeserializer<TValue>? valueDeserializer)
     {
         _logger = logger;
-        
+
         var config = new ConsumerConfig
         {
             BootstrapServers = options.Value.BootstrapServers,
@@ -36,7 +36,7 @@ public class KafkaBackgroundService<TKey, TValue, THandler> : BackgroundService 
             .Build();
 
         consumer.Subscribe(options.Value.Topic);
-        
+
         var policy = Policy
             .Handle<Exception>()
             .WaitAndRetryForeverAsync(
@@ -50,8 +50,8 @@ public class KafkaBackgroundService<TKey, TValue, THandler> : BackgroundService 
                     _logger.LogError(exception, $"Error while handling message, retry number: {retry}");
                 }
             );
-        
-        _asyncConsumer = new(
+
+        _asyncConsumer = new KafkaAsyncConsumer<TKey, TValue>(
             options,
             serviceProvider.GetRequiredService<ILogger<KafkaAsyncConsumer<TKey, TValue>>>(),
             handler,

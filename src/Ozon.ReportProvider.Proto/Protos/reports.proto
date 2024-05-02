@@ -1,12 +1,13 @@
 syntax = "proto3";
 
 option csharp_namespace = "Ozon.ReportProvider.Proto";
+
 package ozon.report_provider.proto.reports;
 
 import "google/type/decimal.proto";
 
 service ReportService {
-    rpc GetReportV1(GetReportRequestV1) returns (GetReportResponseV1);
+    rpc GetReportV1 (GetReportRequestV1) returns (GetReportResponseV1);
 }
 
 message GetReportRequestV1 {

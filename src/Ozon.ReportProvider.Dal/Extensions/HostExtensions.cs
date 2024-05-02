@@ -13,7 +13,7 @@ public static class HostExtensions
         runner.MigrateUp();
         return app;
     }
-    
+
     public static IHost MigrateDown(this IHost app, int version = 0)
     {
         using var scope = app.Services.CreateScope();

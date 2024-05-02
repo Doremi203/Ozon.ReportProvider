@@ -15,9 +15,9 @@ public class ReportRequestService(
         var uncompleteReportRequests = await reportService.GetUncompleteReportRequests(reportRequestEvents, token);
         if (uncompleteReportRequests.Length == 0)
             return;
-        var reports = 
+        var reports =
             await apiReportService.GetReports(uncompleteReportRequests.Adapt<ApiGetReportModel[]>(), token);
-        
+
         await reportService.StoreReports(reports, token);
     }
 }

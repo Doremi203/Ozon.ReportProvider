@@ -5,19 +5,18 @@ using Microsoft.Extensions.Options;
 using Ozon.ReportProvider.Kafka.Common;
 using Ozon.ReportProvider.Kafka.Config;
 using Polly;
-using Polly.Retry;
 
 namespace Ozon.ReportProvider.Kafka;
 
 public sealed class KafkaAsyncConsumer<TKey, TValue> : IDisposable
 {
-    private readonly IHandler<TKey, TValue> _handler;
-    private readonly IConsumer<TKey, TValue> _consumer;
+    private readonly TimeSpan _bufferDelay;
     private readonly Channel<ConsumeResult<TKey, TValue>> _channel;
+    private readonly int _channelCapacity;
+    private readonly IConsumer<TKey, TValue> _consumer;
+    private readonly IHandler<TKey, TValue> _handler;
     private readonly ILogger<KafkaAsyncConsumer<TKey, TValue>> _logger;
     private readonly AsyncPolicy _policy;
-    private readonly int _channelCapacity;
-    private readonly TimeSpan _bufferDelay;
 
     public KafkaAsyncConsumer(
         IOptions<KafkaOptions> options,
@@ -44,6 +43,12 @@ public sealed class KafkaAsyncConsumer<TKey, TValue> : IDisposable
             });
     }
 
+    public void Dispose()
+    {
+        _consumer.Close();
+        _channel.Writer.TryComplete();
+    }
+
     public Task Consume(CancellationToken token)
     {
         var handle = HandleCore(token);
@@ -60,9 +65,7 @@ public sealed class KafkaAsyncConsumer<TKey, TValue> : IDisposable
                                .ReadAllAsync(token)
                                .Buffer(_channelCapacity, _bufferDelay)
                                .WithCancellation(token))
-            {
                 await ProcessWithRetry(consumeResults, token);
-            }
         }
         catch (Exception)
         {
@@ -103,11 +106,5 @@ public sealed class KafkaAsyncConsumer<TKey, TValue> : IDisposable
             foreach (var partitionLastOffset in partitionLastOffsets)
                 _consumer.StoreOffset(partitionLastOffset);
         });
-    }
-
-    public void Dispose()
-    {
-        _consumer.Close();
-        _channel.Writer.TryComplete();
     }
 }

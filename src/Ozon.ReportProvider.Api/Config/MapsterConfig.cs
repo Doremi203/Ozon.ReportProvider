@@ -1,5 +1,4 @@
 using Mapster;
-using Ozon.ReportProvider.Domain.ValueTypes;
 using Decimal = Google.Type.Decimal;
 
 namespace Ozon.ReportProvider.Api.Config;

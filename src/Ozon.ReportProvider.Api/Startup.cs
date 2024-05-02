@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Confluent.Kafka;
 using FluentValidation;
+using Ozon.ReportProvider.Api.Config;
 using Ozon.ReportProvider.Api.Extensions;
 using Ozon.ReportProvider.Api.Interceptors;
 using Ozon.ReportProvider.Api.Kafka.Contracts;
@@ -21,24 +22,23 @@ public class Startup(IConfiguration configuration)
         services.AddKafkaOptions(configuration);
         services.AddSingleton<ReportRequestHandler>();
         services.AddKafkaBackgroundService<Null, ReportRequestEventContract, ReportRequestHandler>(
-            Deserializers.Null, new SystemTextJsonDeserializer<ReportRequestEventContract>(new JsonSerializerOptions()));
-        
-        services.AddGrpc(options =>
-        {
-            options.Interceptors.Add<ValidationInterceptor>();
-        });
+            Deserializers.Null,
+            new SystemTextJsonDeserializer<ReportRequestEventContract>(new JsonSerializerOptions()));
+
+        services.AddGrpc(options => { options.Interceptors.Add<ValidationInterceptor>(); });
         services.AddGrpcReflection();
         services.AddValidatorsFromAssemblyContaining<Startup>();
-        
-        Config.MapsterConfig.ConfigureApiMapping();
+
+        MapsterConfig.ConfigureApiMapping();
         Bll.Config.MapsterConfig.ConfigureDomainMapping();
-        
+
         services
             .AddBllServices()
             .AddDal(configuration);
         services.AddStackExchangeRedisCache(options =>
         {
-            options.Configuration = configuration.GetSection(nameof(RedisOptions)).Get<RedisOptions>()?.ConnectionString;
+            options.Configuration =
+                configuration.GetSection(nameof(RedisOptions)).Get<RedisOptions>()?.ConnectionString;
         });
     }
 

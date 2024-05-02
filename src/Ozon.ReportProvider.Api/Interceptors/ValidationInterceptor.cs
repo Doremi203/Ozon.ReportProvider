@@ -17,7 +17,7 @@ public class ValidationInterceptor(
         var validator = serviceProvider.GetService<IValidator<TRequest>>();
         if (validator is null)
             return await continuation(request, context);
-        
+
         var validationResult = await validator.ValidateAsync(request);
         if (!validationResult.IsValid)
             throw new RpcException(

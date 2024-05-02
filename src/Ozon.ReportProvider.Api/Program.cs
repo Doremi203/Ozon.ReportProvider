@@ -6,10 +6,7 @@ var host = Host.CreateDefaultBuilder(args)
     .Build();
 
 var env = host.Services.GetRequiredService<IWebHostEnvironment>();
-if (env.IsDevelopment())
-{
-    host.MigrateDown();
-}
+if (env.IsDevelopment()) host.MigrateDown();
 
 host.MigrateUp();
 

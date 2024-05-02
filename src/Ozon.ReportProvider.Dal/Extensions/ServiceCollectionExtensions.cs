@@ -62,12 +62,10 @@ public static class ServiceCollectionExtensions
         var dataBaseOptions = configuration.GetSection(nameof(DatabaseOptions)).Get<DatabaseOptions>();
 
         if (dataBaseOptions is not null)
-        {
             services.AddNpgsqlDataSource(
                 dataBaseOptions.ConnectionString,
                 builder => { builder.MapComposite<ReportEntityV1>("reports_v1", builder.DefaultNameTranslator); });
-        }
-        
+
         return services;
     }
 }
