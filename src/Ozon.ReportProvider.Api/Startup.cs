@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Confluent.Kafka;
+using FluentValidation;
 using Ozon.ReportProvider.Api.Extensions;
 using Ozon.ReportProvider.Api.Interceptors;
 using Ozon.ReportProvider.Api.Kafka.Contracts;
@@ -27,6 +28,7 @@ public class Startup(IConfiguration configuration)
             options.Interceptors.Add<ValidationInterceptor>();
         });
         services.AddGrpcReflection();
+        services.AddValidatorsFromAssemblyContaining<Startup>();
         
         Config.MapsterConfig.ConfigureApiMapping();
         Bll.Config.MapsterConfig.ConfigureDomainMapping();
