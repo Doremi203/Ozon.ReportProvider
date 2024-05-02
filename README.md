@@ -1,0 +1,1 @@
+- **DockerImage**: [![Docker Image Version](https://img.shields.io/docker/v/doreml/ozon-report-provider/latest)](https://hub.docker.com/layers/doreml/ozon-report-provider/latest/images/sha256-abf703355537d9b26a2f3ef1359cbd06df33de41448706ddd08886d7781d1c0d?context=repo)
